@@ -391,3 +391,114 @@ export const photosRelations = relations(photos, ({ one, many }) => ({
   }),
   reactions: many(reactions),
 }));
+
+export const inviteCodesRelations = relations(inviteCodes, ({ one }) => ({
+  couple: one(couples, {
+    fields: [inviteCodes.coupleId],
+    references: [couples.id],
+  }),
+  createdBy: one(users, {
+    fields: [inviteCodes.createdById],
+    references: [users.id],
+  }),
+}));
+
+export const dailyMessagesRelations = relations(dailyMessages, ({ one }) => ({
+  couple: one(couples, {
+    fields: [dailyMessages.coupleId],
+    references: [couples.id],
+  }),
+  fromUser: one(users, {
+    fields: [dailyMessages.fromUserId],
+    references: [users.id],
+  }),
+}));
+
+export const timeCapsulesRelations = relations(timeCapsules, ({ one }) => ({
+  couple: one(couples, {
+    fields: [timeCapsules.coupleId],
+    references: [couples.id],
+  }),
+  createdBy: one(users, {
+    fields: [timeCapsules.createdById],
+    references: [users.id],
+  }),
+}));
+
+export const achievementsRelations = relations(achievements, ({ many }) => ({
+  coupleAchievements: many(coupleAchievements),
+}));
+
+export const coupleAchievementsRelations = relations(
+  coupleAchievements,
+  ({ one }) => ({
+    couple: one(couples, {
+      fields: [coupleAchievements.coupleId],
+      references: [couples.id],
+    }),
+    achievement: one(achievements, {
+      fields: [coupleAchievements.achievementId],
+      references: [achievements.id],
+    }),
+  })
+);
+
+export const reactionsRelations = relations(reactions, ({ one }) => ({
+  user: one(users, {
+    fields: [reactions.userId],
+    references: [users.id],
+  }),
+  event: one(events, {
+    fields: [reactions.eventId],
+    references: [events.id],
+  }),
+  photo: one(photos, {
+    fields: [reactions.photoId],
+    references: [photos.id],
+  }),
+}));
+
+export const notificationsRelations = relations(notifications, ({ one }) => ({
+  user: one(users, {
+    fields: [notifications.userId],
+    references: [users.id],
+  }),
+  event: one(events, {
+    fields: [notifications.eventId],
+    references: [events.id],
+  }),
+}));
+
+export const notificationSettingsRelations = relations(
+  notificationSettings,
+  ({ one }) => ({
+    user: one(users, {
+      fields: [notificationSettings.userId],
+      references: [users.id],
+    }),
+  })
+);
+
+export const pushSubscriptionsRelations = relations(
+  pushSubscriptions,
+  ({ one }) => ({
+    user: one(users, {
+      fields: [pushSubscriptions.userId],
+      references: [users.id],
+    }),
+  })
+);
+
+export const sessionsRelations = relations(sessions, ({ one }) => ({
+  user: one(users, {
+    fields: [sessions.userId],
+    references: [users.id],
+  }),
+}));
+
+export const accountsRelations = relations(accounts, ({ one }) => ({
+  user: one(users, {
+    fields: [accounts.userId],
+    references: [users.id],
+  }),
+}));
