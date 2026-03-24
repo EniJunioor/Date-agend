@@ -1,4 +1,4 @@
-# ❤️ Calendário do Casal
+# Calendário do Casal
 
 Aplicação web completa para casais registrarem, celebrarem e reviverem os momentos mais especiais do relacionamento.
 
