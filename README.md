@@ -137,9 +137,9 @@ Configure as variáveis de ambiente no painel da Vercel. O cron job de notifica�
 | M5 — Timeline | ✅ MVP | Linha do tempo, contador de dias |
 | M6 — Notificações | ✅ V1 | E-mail via Resend, cron Vercel, in-app |
 | M7 — Perfil | ✅ MVP | Dark/light mode, 5 temas de cor, "Sobre Nós" |
-| M8 — PWA | 📋 V2 | Instalável, push notification |
+| M8 — PWA | ✅ V2 | Instalável, push notification |
 | M9 — Conquistas | ✅ V1 | 12 badges, progresso |
-| M10 — Estatísticas | 📋 V2 | Mapa de calor, gráficos |
+| M10 — Estatísticas | 📋✅ V2 | Mapa de calor, gráficos |
 | M11 — i18n | ✅ MVP | PT-BR, EN, ES desde o início |
 
 ## Segurança
