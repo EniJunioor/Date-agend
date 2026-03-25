@@ -3,6 +3,7 @@ import { db } from "@/lib/db";
 import { events, users, couples, notifications, cronLogs } from "@/lib/db/schema";
 import { eq, and, gte, lte } from "drizzle-orm";
 import { sendEventReminderEmail } from "@/lib/utils/email";
+import { sendPushToUser } from "@/lib/utils/push";
 import { format, addDays } from "date-fns";
 import { ptBR } from "date-fns/locale";
 
@@ -69,6 +70,16 @@ export async function GET(req: NextRequest) {
               daysAhead
             );
 
+            await sendPushToUser(member.id, {
+              title: "Lembrete ❤️",
+              body:
+                daysAhead === 0
+                  ? `Você tem um evento hoje: ${event.eventTitle}`
+                  : `Você tem um evento amanhã: ${event.eventTitle}`,
+              url: "/calendar",
+              tag: "reminder",
+            });
+
             // Log notification
             await db.insert(notifications).values({
               userId: member.id,
@@ -77,6 +88,7 @@ export async function GET(req: NextRequest) {
               title: `${event.eventTitle} é ${daysAhead === 0 ? "hoje" : "amanhã"}`,
               body: `Não esqueça: ${event.eventTitle} em ${formattedDate}`,
               emailSent: true,
+              pushSent: true,
               sentAt: new Date(),
             });
 

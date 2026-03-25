@@ -301,6 +301,7 @@ export const pushSubscriptions = pgTable("push_subscriptions", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
+
 // ── Auth.js tables ───────────────────────────────────────────────────────────
 
 export const sessions = pgTable(
