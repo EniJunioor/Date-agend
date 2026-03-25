@@ -21,13 +21,19 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Não autenticado" }, { status: 401 });
   }
 
-  // Rate limiting per user
-  const { success } = await uploadRatelimit.limit(session.user.id);
-  if (!success) {
-    return NextResponse.json(
-      { error: "Limite de upload atingido. Tente novamente em 1 hora." },
-      { status: 429 }
-    );
+  // Rate limiting per user (opcional — exige Upstash válido em .env)
+  if (uploadRatelimit) {
+    try {
+      const { success } = await uploadRatelimit.limit(session.user.id);
+      if (!success) {
+        return NextResponse.json(
+          { error: "Limite de upload atingido. Tente novamente em 1 hora." },
+          { status: 429 }
+        );
+      }
+    } catch (err) {
+      console.error("Upload rate limit indisponível (fail-open):", err);
+    }
   }
 
   const formData = await req.formData();

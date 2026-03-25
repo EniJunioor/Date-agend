@@ -19,8 +19,12 @@ const authRoutes = ["/login", "/register", "/forgot-password", "/reset-password"
 export default auth(async (req) => {
   const { pathname } = req.nextUrl;
 
-  // Apply rate limiting to auth routes
+  // Apply rate limiting to auth routes (desativado se Upstash não estiver configurado)
   if (authRoutes.some((route) => pathname.startsWith(route))) {
+    if (!authRatelimit) {
+      return NextResponse.next();
+    }
+
     const ip =
       req.headers.get("x-forwarded-for")?.split(",")[0] ??
       req.headers.get("x-real-ip") ??
