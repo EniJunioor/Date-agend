@@ -9,10 +9,12 @@ import { AppIcon, type AppIconName } from "@/components/ui/app-icon";
 import { getDaysTogether } from "@/lib/utils";
 
 const SB_PINK = "#D84C70";
-const SB_PINK_SOFT = "rgba(216, 76, 112, 0.12)";
+const SB_PINK_SOFT = "rgba(216, 76, 112, 0.1)";
+const SB_PINK_BORDER = "rgba(216, 76, 112, 0.22)";
 const SB_TEXT = "#18181b";
 const SB_MUTED = "#71717a";
-const SB_BORDER = "#f4f4f5";
+const SB_MUTED_LIGHT = "#a1a1aa";
+const SB_BORDER = "#e4e4e7";
 const SB_ICON_BG = "#f4f4f5";
 
 interface SidebarProps {
@@ -87,7 +89,7 @@ export function AppSidebar({ user, couple, partner, galleryRecentPhotoCount }: S
 
   return (
     <>
-      <aside className="sidebar">
+      <aside className="sidebar app-sidebar" aria-label="Navegação principal">
         <div className="sidebar-inner">
           {/* Logo */}
           <div className="sidebar-logo">
@@ -235,8 +237,17 @@ export function AppSidebar({ user, couple, partner, galleryRecentPhotoCount }: S
       </nav>
 
       <style>{`
+        .app-sidebar,
+        .app-sidebar button,
+        .app-sidebar input,
+        .mobile-nav {
+          font-family: var(--font-sidebar);
+          -webkit-font-smoothing: antialiased;
+          -moz-osx-font-smoothing: grayscale;
+        }
+
         .sidebar {
-          width: 268px;
+          width: 272px;
           flex-shrink: 0;
           background: #ffffff;
           border-right: 1px solid ${SB_BORDER};
@@ -246,7 +257,8 @@ export function AppSidebar({ user, couple, partner, galleryRecentPhotoCount }: S
           position: sticky;
           top: 0;
           overflow: hidden;
-          padding: 20px 14px 24px;
+          padding: 22px 16px 20px;
+          box-shadow: 1px 0 0 rgba(0, 0, 0, 0.03);
         }
         .sidebar > .sidebar-inner {
           overflow-y: auto;
@@ -270,34 +282,36 @@ export function AppSidebar({ user, couple, partner, galleryRecentPhotoCount }: S
           display: flex;
           align-items: center;
           gap: 12px;
-          padding: 4px 8px 20px;
+          padding: 2px 4px 22px;
         }
         .sidebar-logo-mark {
-          width: 42px;
-          height: 42px;
+          width: 44px;
+          height: 44px;
           border-radius: 12px;
-          background: ${SB_PINK};
+          background: linear-gradient(145deg, ${SB_PINK} 0%, #c43d5f 100%);
           display: flex;
           align-items: center;
           justify-content: center;
           flex-shrink: 0;
-          box-shadow: 0 2px 8px ${SB_PINK_SOFT};
+          box-shadow: 0 2px 10px ${SB_PINK_SOFT}, 0 1px 2px rgba(0, 0, 0, 0.06);
         }
         .sidebar-logo-text {
-          font-family: var(--font-display);
-          font-weight: 800;
-          font-size: 22px;
-          letter-spacing: -0.02em;
+          font-family: var(--font-sidebar);
+          font-weight: 700;
+          font-size: 1.25rem;
+          letter-spacing: -0.03em;
+          line-height: 1.2;
           color: ${SB_TEXT};
         }
 
         .sidebar-card {
-          background: #fafafa;
+          background: linear-gradient(180deg, #fafafa 0%, #f4f4f5 100%);
           border: 1px solid ${SB_BORDER};
-          border-radius: 16px;
-          padding: 16px 14px 14px;
-          margin-bottom: 22px;
+          border-radius: 14px;
+          padding: 18px 16px 16px;
+          margin-bottom: 24px;
           text-align: center;
+          box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
         }
         .sidebar-card-avatars {
           display: flex;
@@ -348,94 +362,115 @@ export function AppSidebar({ user, couple, partner, galleryRecentPhotoCount }: S
           justify-content: center;
         }
         .sidebar-card-kicker {
-          font-size: 10px;
-          font-weight: 700;
-          letter-spacing: 0.12em;
+          font-family: var(--font-sidebar);
+          font-size: 0.6875rem;
+          font-weight: 600;
+          letter-spacing: 0.1em;
           text-transform: uppercase;
           color: ${SB_MUTED};
-          margin: 0 0 4px;
-        }
-        .sidebar-card-num {
-          font-family: var(--font-display);
-          font-size: 32px;
-          font-weight: 900;
-          line-height: 1;
-          color: ${SB_TEXT};
           margin: 0 0 6px;
         }
+        .sidebar-card-num {
+          font-family: var(--font-sidebar);
+          font-size: 2rem;
+          font-weight: 700;
+          font-variant-numeric: tabular-nums;
+          line-height: 1.05;
+          letter-spacing: -0.02em;
+          color: ${SB_TEXT};
+          margin: 0 0 8px;
+        }
         .sidebar-card-since {
-          font-size: 10px;
+          font-family: var(--font-sidebar);
+          font-size: 0.625rem;
           font-weight: 600;
-          letter-spacing: 0.08em;
+          letter-spacing: 0.1em;
           text-transform: uppercase;
-          color: ${SB_MUTED};
+          color: ${SB_MUTED_LIGHT};
           margin: 0;
         }
 
         .sidebar-section-label {
-          font-size: 10px;
-          font-weight: 700;
-          letter-spacing: 0.14em;
+          font-family: var(--font-sidebar);
+          font-size: 0.6875rem;
+          font-weight: 600;
+          letter-spacing: 0.11em;
           text-transform: uppercase;
-          color: ${SB_MUTED};
-          margin: 0 0 10px 8px;
+          color: ${SB_MUTED_LIGHT};
+          margin: 0 0 8px 4px;
         }
 
         .sidebar-nav-block {
           display: flex;
           flex-direction: column;
-          gap: 4px;
-          margin-bottom: 4px;
+          gap: 2px;
+          margin-bottom: 2px;
         }
 
         .sb-link {
           display: flex;
           align-items: center;
           gap: 12px;
-          padding: 8px 10px;
-          border-radius: 12px;
+          padding: 9px 10px 9px 8px;
+          border-radius: 10px;
           text-decoration: none;
-          transition: background 0.15s ease;
+          transition: background 0.18s ease, color 0.18s ease;
+          outline: none;
+          border: 1px solid transparent;
         }
         .sb-link:hover {
           background: ${SB_PINK_SOFT};
         }
+        .sb-link:focus-visible {
+          border-color: ${SB_PINK_BORDER};
+          box-shadow: 0 0 0 3px ${SB_PINK_SOFT};
+        }
         .sb-link-active {
           background: ${SB_PINK_SOFT};
+          border-color: transparent;
         }
         .sb-ico-wrap {
           width: 40px;
           height: 40px;
-          border-radius: 11px;
+          border-radius: 10px;
           background: ${SB_ICON_BG};
           display: flex;
           align-items: center;
           justify-content: center;
           flex-shrink: 0;
-          transition: background 0.15s ease, box-shadow 0.15s ease;
+          transition: background 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
+        }
+        .sb-link:hover .sb-ico-wrap:not(.sb-ico-wrap-active) {
+          background: #ececee;
         }
         .sb-ico-wrap-active {
           background: ${SB_PINK};
-          box-shadow: 0 4px 12px ${SB_PINK_SOFT};
+          box-shadow: 0 2px 8px ${SB_PINK_SOFT};
         }
         .sb-link-label {
           flex: 1;
-          font-size: 14px;
+          font-family: var(--font-sidebar);
+          font-size: 0.875rem;
+          font-weight: 500;
+          letter-spacing: -0.01em;
+          line-height: 1.35;
+          color: #3f3f46;
+        }
+        .sb-link-active .sb-link-label {
           font-weight: 600;
           color: ${SB_TEXT};
         }
-        .sb-link-active .sb-link-label {
-          font-weight: 700;
-        }
         .sb-badge {
+          font-family: var(--font-sidebar);
           min-width: 22px;
           height: 22px;
           padding: 0 6px;
           border-radius: 999px;
           background: ${SB_PINK};
           color: #fff;
-          font-size: 11px;
-          font-weight: 800;
+          font-size: 0.6875rem;
+          font-weight: 700;
+          font-variant-numeric: tabular-nums;
           display: flex;
           align-items: center;
           justify-content: center;
@@ -448,8 +483,8 @@ export function AppSidebar({ user, couple, partner, galleryRecentPhotoCount }: S
 
         .sidebar-rule {
           height: 1px;
-          background: ${SB_BORDER};
-          margin: 16px 8px 18px;
+          background: linear-gradient(90deg, transparent, ${SB_BORDER} 12%, ${SB_BORDER} 88%, transparent);
+          margin: 18px 4px 20px;
         }
         .sidebar-rule-footer {
           margin-bottom: 16px;
@@ -487,19 +522,26 @@ export function AppSidebar({ user, couple, partner, galleryRecentPhotoCount }: S
           min-width: 0;
         }
         .sidebar-user-name {
-          font-size: 13px;
-          font-weight: 700;
+          font-family: var(--font-sidebar);
+          font-size: 0.8125rem;
+          font-weight: 600;
+          letter-spacing: -0.015em;
+          line-height: 1.35;
           color: ${SB_TEXT};
           white-space: nowrap;
           overflow: hidden;
           text-overflow: ellipsis;
         }
         .sidebar-user-email {
-          font-size: 11px;
+          font-family: var(--font-sidebar);
+          font-size: 0.6875rem;
+          font-weight: 400;
+          letter-spacing: 0.01em;
           color: ${SB_MUTED};
           white-space: nowrap;
           overflow: hidden;
           text-overflow: ellipsis;
+          margin-top: 1px;
         }
         .sidebar-user-actions {
           display: flex;
@@ -511,18 +553,24 @@ export function AppSidebar({ user, couple, partner, galleryRecentPhotoCount }: S
           height: 36px;
           border-radius: 10px;
           border: 1px solid ${SB_BORDER};
-          background: #fff;
+          background: #fafafa;
           display: flex;
           align-items: center;
           justify-content: center;
           cursor: pointer;
           text-decoration: none;
           color: inherit;
-          transition: border-color 0.15s, background 0.15s;
+          transition: border-color 0.18s ease, background 0.18s ease, box-shadow 0.18s ease;
         }
         .sb-icon-btn:hover {
+          border-color: ${SB_PINK_BORDER};
+          background: #fff;
+          box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+        }
+        .sb-icon-btn:focus-visible {
+          outline: none;
           border-color: ${SB_PINK};
-          background: ${SB_PINK_SOFT};
+          box-shadow: 0 0 0 3px ${SB_PINK_SOFT};
         }
 
         .mobile-nav {
@@ -558,8 +606,10 @@ export function AppSidebar({ user, couple, partner, galleryRecentPhotoCount }: S
           font-weight: 700;
         }
         .mobile-nav-label {
-          font-size: 10px;
+          font-family: var(--font-sidebar);
+          font-size: 0.625rem;
           font-weight: 500;
+          letter-spacing: 0.02em;
         }
       `}</style>
     </>
