@@ -1,4 +1,4 @@
-import NextAuth from "next-auth";
+import NextAuth, { CredentialsSignin } from "next-auth";
 import Google from "next-auth/providers/google";
 import Credentials from "next-auth/providers/credentials";
 import { DrizzleAdapter } from "@auth/drizzle-adapter";
@@ -7,6 +7,14 @@ import { users, accounts, sessions, verificationTokens } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 import bcrypt from "bcryptjs";
 import { loginSchema } from "@/lib/validators/auth";
+
+/** Senha correta, mas e-mail ainda não confirmado — precisa ser CredentialsSignin para o signIn repassar o código. */
+class EmailNotVerified extends CredentialsSignin {
+  constructor() {
+    super();
+    this.code = "email_not_verified";
+  }
+}
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   adapter: DrizzleAdapter(db, {
@@ -51,7 +59,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         if (!passwordMatch) return null;
 
         if (!user.emailVerified) {
-          throw new Error("email_not_verified");
+          throw new EmailNotVerified();
         }
 
         return {

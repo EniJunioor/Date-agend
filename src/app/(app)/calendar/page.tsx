@@ -9,15 +9,16 @@ export const metadata: Metadata = { title: "Calendário" };
 export default async function CalendarPage({
   searchParams,
 }: {
-  searchParams: { year?: string; month?: string; view?: string };
+  searchParams: Promise<{ year?: string; month?: string; view?: string }>;
 }) {
   const session = await auth();
   if (!session?.user?.id) redirect("/login");
   if (!session.user.coupleId) redirect("/invite");
 
+  const params = await searchParams;
   const now = new Date();
-  const year = parseInt(searchParams.year ?? String(now.getFullYear()));
-  const month = parseInt(searchParams.month ?? String(now.getMonth() + 1));
+  const year = parseInt(params.year ?? String(now.getFullYear()));
+  const month = parseInt(params.month ?? String(now.getMonth() + 1));
 
   const events = await getEventsForMonth(year, month);
 
@@ -26,7 +27,7 @@ export default async function CalendarPage({
       initialEvents={events}
       year={year}
       month={month}
-      view={(searchParams.view as "monthly" | "weekly" | "agenda") ?? "monthly"}
+      view={(params.view as "monthly" | "weekly" | "agenda") ?? "monthly"}
     />
   );
 }

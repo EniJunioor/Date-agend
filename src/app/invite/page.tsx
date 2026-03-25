@@ -2,13 +2,14 @@ import type { Metadata } from "next";
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { InviteFlow } from "@/components/auth/InviteFlow";
+import { AppIcon } from "@/components/ui/app-icon";
 
 export const metadata: Metadata = { title: "Vincular casal" };
 
 export default async function InvitePage({
   searchParams,
 }: {
-  searchParams: { code?: string };
+  searchParams: Promise<{ code?: string }>;
 }) {
   const session = await auth();
   if (!session?.user?.id) redirect("/login");
@@ -16,12 +17,16 @@ export default async function InvitePage({
   // If already has couple, go to dashboard
   if (session.user.coupleId) redirect("/dashboard");
 
+  const params = await searchParams;
+
   return (
     <div className="invite-page">
       <div className="invite-card">
         <div className="invite-hero">
           <div className="invite-hero-bg" />
-          <div className="invite-emoji">💑</div>
+          <div className="invite-emoji">
+            <AppIcon name="users" size={48} strokeWidth={1.25} />
+          </div>
           <h1 className="invite-title">Conecte-se com seu amor</h1>
           <p className="invite-sub">
             Crie um casal e convide seu/sua parceiro(a) para compartilhar memórias juntos.
@@ -30,7 +35,7 @@ export default async function InvitePage({
 
         <InviteFlow
           userId={session.user.id}
-          prefilledCode={searchParams.code}
+          prefilledCode={params.code}
         />
       </div>
 
@@ -58,7 +63,7 @@ export default async function InvitePage({
           position: absolute; inset: 0;
           background: radial-gradient(circle at 50% 0%, rgba(244,114,182,0.25) 0%, transparent 70%);
         }
-        .invite-emoji { font-size: 52px; margin-bottom: 12px; position: relative; z-index: 1; animation: pulse-heart 2s ease-in-out infinite; }
+        .invite-emoji { display: flex; justify-content: center; margin-bottom: 12px; position: relative; z-index: 1; color: rgba(255,255,255,0.95); animation: pulse-heart 2s ease-in-out infinite; }
         .invite-title {
           font-family: var(--font-display);
           font-size: 26px; font-weight: 800; margin-bottom: 8px; position: relative; z-index: 1;

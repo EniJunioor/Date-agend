@@ -123,7 +123,7 @@ export const events = pgTable(
     eventDate: date("event_date").notNull(),
     eventTime: time("event_time"),
     category: eventCategoryEnum("category").notNull(),
-    moodEmoji: varchar("mood_emoji", { length: 10 }),
+    moodEmoji: varchar("mood_emoji", { length: 32 }),
     isFavorite: boolean("is_favorite").default(false),
     tags: text("tags").array(),
     location: text("location"),
@@ -181,7 +181,7 @@ export const reactions = pgTable(
     photoId: uuid("photo_id").references(() => photos.id, {
       onDelete: "cascade",
     }),
-    emoji: varchar("emoji", { length: 10 }).notNull(),
+    emoji: varchar("emoji", { length: 32 }).notNull(),
     createdAt: timestamp("created_at").defaultNow().notNull(),
   }
 );

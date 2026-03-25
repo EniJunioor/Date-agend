@@ -18,6 +18,7 @@ import {
 import { ptBR } from "date-fns/locale";
 import { categoryColors, categoryLabels } from "@/lib/utils";
 import { EventModal } from "./EventModal";
+import { AppIcon, resolveMoodIconKey } from "@/components/ui/app-icon";
 
 type CalendarEvent = {
   id: string;
@@ -90,11 +91,15 @@ export function CalendarView({ initialEvents, year, month, view: initialView }: 
       {/* ── Toolbar ──────────────────────────────────────────────────────── */}
       <div className="cal-toolbar">
         <div className="cal-toolbar-left">
-          <button className="cal-btn" onClick={() => navigateMonth(-1)} aria-label="Mês anterior">‹</button>
+          <button type="button" className="cal-btn" onClick={() => navigateMonth(-1)} aria-label="Mês anterior">
+            <AppIcon name="chevron-left" size={18} />
+          </button>
           <h2 className="cal-month-title">
             {format(currentDate, "MMMM yyyy", { locale: ptBR })}
           </h2>
-          <button className="cal-btn" onClick={() => navigateMonth(1)} aria-label="Próximo mês">›</button>
+          <button type="button" className="cal-btn" onClick={() => navigateMonth(1)} aria-label="Próximo mês">
+            <AppIcon name="chevron-right" size={18} />
+          </button>
           <button className="cal-btn-today" onClick={goToToday}>Hoje</button>
         </div>
 
@@ -155,7 +160,11 @@ export function CalendarView({ initialEvents, year, month, view: initialView }: 
                         onClick={(e) => handleEventClick(e, event)}
                         title={event.title}
                       >
-                        {event.moodEmoji && <span>{event.moodEmoji}</span>}
+                        {event.moodEmoji && (
+                          <span style={{ display: "inline-flex", flexShrink: 0, marginRight: 4 }}>
+                            <AppIcon name={resolveMoodIconKey(event.moodEmoji)} size={12} strokeWidth={2} />
+                          </span>
+                        )}
                         {event.title}
                       </button>
                     ))}
@@ -202,10 +211,18 @@ export function CalendarView({ initialEvents, year, month, view: initialView }: 
                   </div>
                 </div>
                 <div className="agenda-body">
-                  <div className="agenda-title">
-                    {event.moodEmoji && <span>{event.moodEmoji} </span>}
-                    {event.title}
-                    {event.isFavorite && <span title="Favorito"> ⭐</span>}
+                  <div className="agenda-title" style={{ display: "flex", alignItems: "center", flexWrap: "wrap", gap: 6 }}>
+                    {event.moodEmoji && (
+                      <span style={{ display: "inline-flex" }}>
+                        <AppIcon name={resolveMoodIconKey(event.moodEmoji)} size={18} />
+                      </span>
+                    )}
+                    <span>{event.title}</span>
+                    {event.isFavorite && (
+                      <span title="Favorito" style={{ display: "inline-flex" }}>
+                        <AppIcon name="star" size={16} fill="currentColor" />
+                      </span>
+                    )}
                   </div>
                   <div className="agenda-meta">
                     <span>{categoryLabels[event.category]}</span>
@@ -255,7 +272,7 @@ const calStyles = `
   .cal-btn {
     width: 32px; height: 32px; border-radius: var(--radius-md);
     border: 1px solid var(--border); background: var(--background);
-    color: var(--foreground); font-size: 18px; font-weight: 300;
+    color: var(--foreground);
     cursor: pointer; display: flex; align-items: center; justify-content: center;
     transition: all 0.15s;
   }
@@ -329,6 +346,7 @@ const calStyles = `
     border: none; cursor: pointer; text-align: left;
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     transition: filter 0.15s;
+    display: flex; align-items: center; gap: 4px;
   }
   .cal-event:hover { filter: brightness(1.15); }
   .cal-event-more { font-size: 11px; color: var(--foreground-muted); padding: 0 4px; }

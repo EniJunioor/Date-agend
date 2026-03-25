@@ -6,6 +6,7 @@ import { users, couples } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 import { getDaysTogether, formatEventDate } from "@/lib/utils";
 import Image from "next/image";
+import { AppIcon } from "@/components/ui/app-icon";
 
 export const metadata: Metadata = { title: "Sobre Nós" };
 
@@ -52,7 +53,9 @@ export default async function AboutUsPage() {
           />
         ) : (
           <div className="cover-placeholder">
-            <span className="cover-emoji">💑</span>
+            <span className="cover-emoji">
+              <AppIcon name="users" size={64} strokeWidth={1.25} color="rgba(255,255,255,0.4)" />
+            </span>
             <span className="cover-hint">Adicione uma foto do casal nas configurações</span>
           </div>
         )}
@@ -102,21 +105,27 @@ export default async function AboutUsPage() {
       {/* ── Since + Bio ───────────────────────────────────────────────────── */}
       <div className="about-details">
         <div className="detail-card">
-          <div className="detail-icon">📅</div>
+          <div className="detail-icon">
+            <AppIcon name="calendar" size={24} />
+          </div>
           <div>
             <div className="detail-label">Juntos desde</div>
             <div className="detail-value">{formatEventDate(couple.startDate as string)}</div>
           </div>
         </div>
         <div className="detail-card">
-          <div className="detail-icon">❤️</div>
+          <div className="detail-icon">
+            <AppIcon name="heart" size={24} />
+          </div>
           <div>
             <div className="detail-label">Dias juntos</div>
             <div className="detail-value">{daysTogether.toLocaleString("pt-BR")} dias</div>
           </div>
         </div>
         <div className="detail-card">
-          <div className="detail-icon">🎨</div>
+          <div className="detail-icon">
+            <AppIcon name="palette" size={24} />
+          </div>
           <div>
             <div className="detail-label">Tema do casal</div>
             <div className="detail-value" style={{ textTransform: "capitalize" }}>
@@ -128,13 +137,15 @@ export default async function AboutUsPage() {
 
       {couple.bio && (
         <div className="about-bio">
-          <h3 className="bio-title">Nossa história ✍️</h3>
+          <h3 className="bio-title" style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            <AppIcon name="pencil" size={20} /> Nossa história
+          </h3>
           <p className="bio-text">{couple.bio}</p>
         </div>
       )}
 
       <a href="/settings" className="btn-edit-profile">
-        ✏️ Editar perfil do casal
+        <AppIcon name="pencil" size={18} /> Editar perfil do casal
       </a>
 
       <style>{aboutStyles}</style>
@@ -157,7 +168,7 @@ const aboutStyles = `
     display: flex; flex-direction: column; align-items: center; justify-content: center;
     gap: 12px; color: rgba(255,255,255,0.6);
   }
-  .cover-emoji { font-size: 64px; opacity: 0.4; }
+  .cover-emoji { display: flex; justify-content: center; }
   .cover-hint { font-size: 13px; }
   .cover-overlay {
     position: absolute; inset: 0;
@@ -205,7 +216,7 @@ const aboutStyles = `
     border-radius: var(--radius-lg); padding: 16px;
     display: flex; align-items: center; gap: 12px;
   }
-  .detail-icon { font-size: 24px; }
+  .detail-icon { display: flex; align-items: center; justify-content: center; flex-shrink: 0; color: var(--primary); }
   .detail-label { font-size: 11px; color: var(--foreground-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 2px; }
   .detail-value { font-size: 15px; font-weight: 700; color: var(--foreground); }
 

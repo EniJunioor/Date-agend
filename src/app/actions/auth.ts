@@ -13,7 +13,7 @@ import { sendVerificationEmail, sendPasswordResetEmail } from "@/lib/utils/email
 import { eq, and, gt } from "drizzle-orm";
 import bcrypt from "bcryptjs";
 import { signIn, signOut } from "@/lib/auth";
-import { AuthError } from "next-auth";
+import { AuthError, CredentialsSignin } from "next-auth";
 import { redirect } from "next/navigation";
 import { nanoid } from "nanoid";
 
@@ -66,14 +66,66 @@ export async function registerAction(formData: FormData) {
     expires,
   });
 
-  // Send verification email
-  try {
-    await sendVerificationEmail(email, name, token);
-  } catch (e) {
-    console.error("Failed to send verification email:", e);
+  const sendResult = await sendVerificationEmail(email, name, token);
+  if (!sendResult.ok) {
+    console.error("sendVerificationEmail:", sendResult.message);
   }
 
-  return { success: true, email };
+  return {
+    success: true,
+    email,
+    emailSent: sendResult.ok,
+    emailError: sendResult.ok ? undefined : sendResult.message,
+  };
+}
+
+// ── Reenviar link de verificação ───────────────────────────────────────────────
+export async function resendVerificationEmailAction(formData: FormData) {
+  const email = String(formData.get("email") ?? "")
+    .trim()
+    .toLowerCase();
+  if (!email) {
+    return { error: "Informe o e-mail usado no cadastro." };
+  }
+
+  const [user] = await db
+    .select({
+      id: users.id,
+      name: users.name,
+      emailVerified: users.emailVerified,
+    })
+    .from(users)
+    .where(eq(users.email, email))
+    .limit(1);
+
+  if (!user) {
+    return { success: true as const };
+  }
+
+  if (user.emailVerified) {
+    return { error: "Este e-mail já está confirmado. Você pode entrar normalmente." };
+  }
+
+  await db
+    .delete(verificationTokens)
+    .where(eq(verificationTokens.identifier, email));
+
+  const token = generateToken();
+  const expires = new Date(Date.now() + 24 * 60 * 60 * 1000);
+
+  await db.insert(verificationTokens).values({
+    identifier: email,
+    token,
+    expires,
+  });
+
+  const sendResult = await sendVerificationEmail(email, user.name, token);
+  if (!sendResult.ok) {
+    console.error("resendVerificationEmail:", sendResult.message);
+    return { error: sendResult.message };
+  }
+
+  return { success: true as const };
 }
 
 // ── Verify email ──────────────────────────────────────────────────────────────
@@ -128,10 +180,13 @@ export async function loginAction(formData: FormData) {
       redirect: false,
     });
   } catch (error) {
+    if (
+      error instanceof CredentialsSignin &&
+      error.code === "email_not_verified"
+    ) {
+      return { error: "Confirme seu e-mail antes de entrar." };
+    }
     if (error instanceof AuthError) {
-      if (error.message.includes("email_not_verified")) {
-        return { error: "Confirme seu e-mail antes de entrar." };
-      }
       return { error: "E-mail ou senha incorretos." };
     }
     throw error;
@@ -171,10 +226,9 @@ export async function forgotPasswordAction(formData: FormData) {
     expires,
   });
 
-  try {
-    await sendPasswordResetEmail(email, user.name, token);
-  } catch (e) {
-    console.error("Failed to send reset email:", e);
+  const sendResult = await sendPasswordResetEmail(email, user.name, token);
+  if (!sendResult.ok) {
+    console.error("sendPasswordResetEmail:", sendResult.message);
   }
 
   return { success: true };

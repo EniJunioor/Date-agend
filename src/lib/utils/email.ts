@@ -6,21 +6,37 @@ const FROM = process.env.RESEND_FROM_EMAIL ?? "noreply@calendariodocasal.com.br"
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
 const APP_NAME = process.env.NEXT_PUBLIC_APP_NAME ?? "Calendário do Casal";
 
+export type SendEmailResult =
+  | { ok: true }
+  | { ok: false; message: string };
+
+function missingKeyMessage(): SendEmailResult {
+  return {
+    ok: false,
+    message:
+      "RESEND_API_KEY não configurada. Defina no .env.local e reinicie o servidor.",
+  };
+}
+
 // ── Email verification ────────────────────────────────────────────────────────
 export async function sendVerificationEmail(
   email: string,
   name: string,
   token: string
-) {
-  const link = `${APP_URL}/verify-email?token=${token}`;
+): Promise<SendEmailResult> {
+  if (!process.env.RESEND_API_KEY?.trim()) {
+    return missingKeyMessage();
+  }
 
-  await resend.emails.send({
+  const link = `${APP_URL}/verify-email?token=${encodeURIComponent(token)}`;
+
+  const { error } = await resend.emails.send({
     from: `${APP_NAME} <${FROM}>`,
     to: email,
-    subject: "Confirme seu e-mail ❤️",
+    subject: "Confirme seu e-mail",
     html: `
       <div style="font-family:sans-serif;max-width:500px;margin:0 auto;padding:32px;background:#fff;border-radius:12px;">
-        <h1 style="color:#db2777;margin-bottom:8px;">Olá, ${name}! ❤️</h1>
+        <h1 style="color:#db2777;margin-bottom:8px;">Olá, ${name}!</h1>
         <p style="color:#374151;line-height:1.6;">
           Bem-vindo(a) ao <strong>${APP_NAME}</strong>! Clique no botão abaixo para confirmar seu e-mail e começar a registrar os momentos mais especiais do seu relacionamento.
         </p>
@@ -33,6 +49,11 @@ export async function sendVerificationEmail(
       </div>
     `,
   });
+
+  if (error) {
+    return { ok: false, message: error.message };
+  }
+  return { ok: true };
 }
 
 // ── Password reset ────────────────────────────────────────────────────────────
@@ -40,10 +61,14 @@ export async function sendPasswordResetEmail(
   email: string,
   name: string,
   token: string
-) {
-  const link = `${APP_URL}/reset-password?token=${token}`;
+): Promise<SendEmailResult> {
+  if (!process.env.RESEND_API_KEY?.trim()) {
+    return missingKeyMessage();
+  }
 
-  await resend.emails.send({
+  const link = `${APP_URL}/reset-password?token=${encodeURIComponent(token)}`;
+
+  const { error } = await resend.emails.send({
     from: `${APP_NAME} <${FROM}>`,
     to: email,
     subject: "Redefinir sua senha",
@@ -62,6 +87,11 @@ export async function sendPasswordResetEmail(
       </div>
     `,
   });
+
+  if (error) {
+    return { ok: false, message: error.message };
+  }
+  return { ok: true };
 }
 
 // ── Event reminder ────────────────────────────────────────────────────────────
@@ -77,10 +107,10 @@ export async function sendEventReminderEmail(
   await resend.emails.send({
     from: `${APP_NAME} <${FROM}>`,
     to: email,
-    subject: `Lembrete: ${eventTitle} é ${when} 💕`,
+    subject: `Lembrete: ${eventTitle} é ${when}`,
     html: `
       <div style="font-family:sans-serif;max-width:500px;margin:0 auto;padding:32px;background:#fff;border-radius:12px;">
-        <h1 style="color:#db2777;margin-bottom:8px;">Lembrete de evento 📅</h1>
+        <h1 style="color:#db2777;margin-bottom:8px;">Lembrete de evento</h1>
         <p style="color:#374151;line-height:1.6;">
           Olá, ${name}! Só um lembrete que <strong>${eventTitle}</strong> é ${when} (${eventDate}).
         </p>

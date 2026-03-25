@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { AppIcon } from "@/components/ui/app-icon";
 
 interface AppHeaderProps {
   user: {
@@ -42,7 +43,7 @@ export function AppHeader({ user }: AppHeaderProps) {
         </Link>
 
         <Link href="/notifications" className="header-icon-btn" aria-label="Notificações">
-          🔔
+          <AppIcon name="bell" size={18} />
         </Link>
 
         <Link href="/settings" className="header-avatar" aria-label="Configurações">

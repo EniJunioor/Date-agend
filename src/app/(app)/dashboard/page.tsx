@@ -11,6 +11,7 @@ import { users, couples } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 import { getDaysTogether, formatEventDate, categoryColors } from "@/lib/utils";
 import Link from "next/link";
+import { AppIcon, resolveMoodIconKey } from "@/components/ui/app-icon";
 
 export const metadata: Metadata = { title: "Início" };
 
@@ -50,23 +51,27 @@ export default async function DashboardPage() {
         <div className="days-hero-content">
           <div className="days-counter">
             <div className="days-number">{daysTogether.toLocaleString("pt-BR")}</div>
-            <div className="days-label">dias juntos ❤️</div>
+            <div className="days-label" style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 6 }}>
+              dias juntos <AppIcon name="heart" size={16} />
+            </div>
           </div>
           <div className="days-sub">
             Desde {formatEventDate(couple.startDate as string)}
           </div>
         </div>
-        <div className="days-hero-emoji">💑</div>
+        <div className="days-hero-emoji">
+          <AppIcon name="users" size={56} strokeWidth={1.25} />
+        </div>
       </section>
 
       <div className="dashboard-grid">
         {/* ── Today in History ──────────────────────────────────────────── */}
         <section className="dash-card">
-          <h2 className="dash-card-title">
-            <span>🕰️</span> Hoje na história
+          <h2 className="dash-card-title" style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            <AppIcon name="history" size={18} /> Hoje na história
           </h2>
           {todayInHistory.length === 0 ? (
-            <p className="dash-empty">Nenhuma memória especial nesta data... ainda! 😊</p>
+            <p className="dash-empty">Nenhuma memória especial nesta data... ainda!</p>
           ) : (
             <div className="event-list">
               {todayInHistory.map((event) => (
@@ -83,7 +88,9 @@ export default async function DashboardPage() {
                     </div>
                   </div>
                   {event.moodEmoji && (
-                    <span className="event-mood">{event.moodEmoji}</span>
+                    <span className="event-mood" style={{ display: "inline-flex" }}>
+                      <AppIcon name={resolveMoodIconKey(event.moodEmoji)} size={18} />
+                    </span>
                   )}
                 </Link>
               ))}
@@ -94,8 +101,8 @@ export default async function DashboardPage() {
         {/* ── Upcoming Events ───────────────────────────────────────────── */}
         <section className="dash-card">
           <div className="dash-card-header">
-            <h2 className="dash-card-title">
-              <span>📅</span> Próximos eventos
+            <h2 className="dash-card-title" style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <AppIcon name="calendar" size={18} /> Próximos eventos
             </h2>
             <Link href="/calendar" className="dash-card-link">Ver calendário →</Link>
           </div>
@@ -119,7 +126,11 @@ export default async function DashboardPage() {
                       {event.eventTime ? ` · ${event.eventTime.substring(0, 5)}` : ""}
                     </div>
                   </div>
-                  {event.isFavorite && <span title="Favorito">⭐</span>}
+                  {event.isFavorite && (
+                    <span title="Favorito" style={{ display: "inline-flex" }}>
+                      <AppIcon name="star" size={16} />
+                    </span>
+                  )}
                 </Link>
               ))}
             </div>
@@ -129,8 +140,8 @@ export default async function DashboardPage() {
         {/* ── Favorites ─────────────────────────────────────────────────── */}
         <section className="dash-card dash-card-wide">
           <div className="dash-card-header">
-            <h2 className="dash-card-title">
-              <span>⭐</span> Favoritos
+            <h2 className="dash-card-title" style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <AppIcon name="star" size={18} /> Favoritos
             </h2>
             <Link href="/timeline" className="dash-card-link">Ver linha do tempo →</Link>
           </div>
@@ -148,7 +159,9 @@ export default async function DashboardPage() {
                   />
                   <div className="fav-card-body">
                     {event.moodEmoji && (
-                      <span className="fav-emoji">{event.moodEmoji}</span>
+                      <span className="fav-emoji" style={{ display: "inline-flex" }}>
+                        <AppIcon name={resolveMoodIconKey(event.moodEmoji)} size={20} />
+                      </span>
                     )}
                     <div className="fav-title">{event.title}</div>
                     <div className="fav-date">
@@ -193,7 +206,7 @@ const dashboardStyles = `
   }
   .days-label { font-size: 18px; font-weight: 600; opacity: 0.9; }
   .days-sub { font-size: 14px; opacity: 0.7; }
-  .days-hero-emoji { font-size: 80px; opacity: 0.3; position: absolute; right: 36px; top: 50%; transform: translateY(-50%); }
+  .days-hero-emoji { opacity: 0.35; position: absolute; right: 36px; top: 50%; transform: translateY(-50%); display: flex; color: white; }
 
   /* Grid */
   .dashboard-grid {

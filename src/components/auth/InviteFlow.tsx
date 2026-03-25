@@ -3,6 +3,7 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { createCoupleAction, joinCoupleAction } from "@/app/actions/auth";
+import { AppIcon } from "@/components/ui/app-icon";
 
 interface InviteFlowProps {
   userId: string;
@@ -55,7 +56,9 @@ export function InviteFlow({ userId, prefilledCode }: InviteFlowProps) {
     return (
       <div style={{ padding: 32, display: "flex", flexDirection: "column", gap: 20 }}>
         <div style={{ textAlign: "center" }}>
-          <div style={{ fontSize: 40, marginBottom: 12 }}>🎉</div>
+          <div style={{ display: "flex", justifyContent: "center", marginBottom: 12 }}>
+            <AppIcon name="party-popper" size={40} style={{ color: "var(--primary)" }} />
+          </div>
           <h2 style={{ fontFamily: "var(--font-display)", fontSize: 22, fontWeight: 800, color: "var(--foreground)", marginBottom: 8 }}>
             Casal criado!
           </h2>
@@ -91,7 +94,15 @@ export function InviteFlow({ userId, prefilledCode }: InviteFlowProps) {
               cursor: "pointer", transition: "all 0.2s"
             }}
           >
-            {copied ? "✅ Copiado!" : "📋 Copiar código"}
+            {copied ? (
+              <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+                <AppIcon name="check" size={16} /> Copiado
+              </span>
+            ) : (
+              <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+                <AppIcon name="copy" size={16} /> Copiar código
+              </span>
+            )}
           </button>
         </div>
 
@@ -137,7 +148,10 @@ export function InviteFlow({ userId, prefilledCode }: InviteFlowProps) {
               boxShadow: tab === t ? "var(--shadow-sm)" : "none"
             }}
           >
-            {t === "create" ? "💑 Criar casal" : "🔗 Entrar em um casal"}
+            <span style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 6 }}>
+              <AppIcon name={t === "create" ? "users" : "link-2"} size={16} />
+              {t === "create" ? "Criar casal" : "Entrar em um casal"}
+            </span>
           </button>
         ))}
       </div>
@@ -187,7 +201,7 @@ export function InviteFlow({ userId, prefilledCode }: InviteFlowProps) {
               boxShadow: "var(--shadow-primary)"
             }}
           >
-            {isPending ? "Criando..." : "Criar casal 💑"}
+            {isPending ? "Criando..." : "Criar casal"}
           </button>
         </form>
       )}
@@ -230,7 +244,7 @@ export function InviteFlow({ userId, prefilledCode }: InviteFlowProps) {
               boxShadow: "var(--shadow-primary)"
             }}
           >
-            {isPending ? "Entrando..." : "Entrar no casal 🔗"}
+            {isPending ? "Entrando..." : "Entrar no casal"}
           </button>
         </form>
       )}

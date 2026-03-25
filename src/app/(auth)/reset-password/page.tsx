@@ -4,6 +4,7 @@ import { useState, useTransition } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { resetPasswordAction } from "@/app/actions/auth";
+import { AppIcon } from "@/components/ui/app-icon";
 
 export default function ResetPasswordPage() {
   const searchParams = useSearchParams();
@@ -16,7 +17,9 @@ export default function ResetPasswordPage() {
   if (!token) {
     return (
       <div style={{ textAlign: "center" }}>
-        <div style={{ fontSize: 48, marginBottom: 12 }}>❌</div>
+        <div style={{ display: "flex", justifyContent: "center", marginBottom: 12 }}>
+          <AppIcon name="x" size={48} strokeWidth={2} style={{ color: "#dc2626" }} />
+        </div>
         <h2 style={{ fontFamily: "var(--font-display)", fontSize: 22, fontWeight: 800, color: "var(--foreground)", marginBottom: 8 }}>
           Link inválido
         </h2>
@@ -33,7 +36,9 @@ export default function ResetPasswordPage() {
   if (success) {
     return (
       <div style={{ textAlign: "center" }}>
-        <div style={{ fontSize: 52, marginBottom: 16 }}>✅</div>
+        <div style={{ display: "flex", justifyContent: "center", marginBottom: 16 }}>
+          <AppIcon name="check" size={52} strokeWidth={2} style={{ color: "var(--primary)" }} />
+        </div>
         <h2 style={{ fontFamily: "var(--font-display)", fontSize: 24, fontWeight: 800, color: "var(--foreground)", marginBottom: 8 }}>
           Senha redefinida!
         </h2>

@@ -36,8 +36,10 @@ export function LoginForm({ callbackUrl = "/dashboard" }: LoginFormProps) {
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
 
-  async function handleSubmit(formData: FormData) {
+  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
     setError(null);
+    const formData = new FormData(e.currentTarget);
     startTransition(async () => {
       const result = await loginAction(formData);
       if (result?.error) setError(result.error);
@@ -50,7 +52,7 @@ export function LoginForm({ callbackUrl = "/dashboard" }: LoginFormProps) {
 
   return (
     <div>
-      <form action={handleSubmit}>
+      <form onSubmit={handleSubmit} method="post">
         {error ? (
           <div className="auth-split-alert auth-split-alert--err" role="alert">
             {error}

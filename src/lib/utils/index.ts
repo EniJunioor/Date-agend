@@ -100,5 +100,4 @@ export const categoryLabels: Record<string, string> = {
   outro: "Outro",
 };
 
-// ── Mood emojis ───────────────────────────────────────────────────────────────
-export const moodEmojis = ["😊", "🥰", "🎉", "😢", "😌", "🤩", "😍", "💕"];
+// Humor do evento: use moodIconOptions + AppIcon em @/components/ui/app-icon

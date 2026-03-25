@@ -3,8 +3,9 @@ import { redirect } from "next/navigation";
 import { AppSidebar } from "@/components/shared/AppSidebar";
 import { AppHeader } from "@/components/shared/AppHeader";
 import { db } from "@/lib/db";
-import { users, couples } from "@/lib/db/schema";
-import { eq } from "drizzle-orm";
+import { users, couples, photos } from "@/lib/db/schema";
+import { and, count, eq, gte } from "drizzle-orm";
+import { subDays } from "date-fns";
 
 export default async function AppLayout({
   children,
@@ -28,6 +29,9 @@ export default async function AppLayout({
     .limit(1);
 
   let couple = null;
+  let partner: { name: string; image: string | null } | null = null;
+  let galleryRecentPhotoCount = 0;
+
   if (user?.coupleId) {
     const [coupleData] = await db
       .select()
@@ -35,6 +39,25 @@ export default async function AppLayout({
       .where(eq(couples.id, user.coupleId))
       .limit(1);
     couple = coupleData;
+
+    const members = await db
+      .select({ id: users.id, name: users.name, image: users.image })
+      .from(users)
+      .where(eq(users.coupleId, user.coupleId));
+
+    const other = members.find((m) => m.id !== user.id);
+    if (other) {
+      partner = { name: other.name ?? "", image: other.image };
+    }
+
+    const since = subDays(new Date(), 14);
+    const [photoRow] = await db
+      .select({ c: count() })
+      .from(photos)
+      .where(
+        and(eq(photos.coupleId, user.coupleId), gte(photos.createdAt, since))
+      );
+    galleryRecentPhotoCount = Number(photoRow?.c ?? 0);
   }
 
   // If no couple, redirect to couple setup
@@ -45,7 +68,12 @@ export default async function AppLayout({
 
   return (
     <div className="app-shell">
-      <AppSidebar user={user} couple={couple} />
+      <AppSidebar
+        user={user}
+        couple={couple}
+        partner={partner}
+        galleryRecentPhotoCount={galleryRecentPhotoCount}
+      />
       <div className="app-main">
         <AppHeader user={user} />
         <main className="app-content">{children}</main>

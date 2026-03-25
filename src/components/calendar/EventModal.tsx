@@ -2,7 +2,12 @@
 
 import { useState, useTransition, useRef, useEffect } from "react";
 import { createEventAction, updateEventAction } from "@/app/actions/events";
-import { categoryColors, categoryLabels, moodEmojis } from "@/lib/utils";
+import { categoryColors, categoryLabels } from "@/lib/utils";
+import {
+  AppIcon,
+  moodIconOptions,
+  resolveMoodIconKey,
+} from "@/components/ui/app-icon";
 import { format } from "date-fns";
 
 type Event = {
@@ -44,7 +49,9 @@ export function EventModal({ defaultDate, event, onClose, onSuccess }: EventModa
   const [tags, setTags] = useState<string[]>(event?.tags ?? []);
   const [tagInput, setTagInput] = useState("");
   const [selectedColor, setSelectedColor] = useState<string>(event?.color ?? "#db2777");
-  const [selectedMood, setSelectedMood] = useState<string>(event?.moodEmoji ?? "");
+  const [selectedMood, setSelectedMood] = useState<string>(() =>
+    event?.moodEmoji ? resolveMoodIconKey(event.moodEmoji) : ""
+  );
   const backdropRef = useRef<HTMLDivElement>(null);
 
   // Close on Escape
@@ -96,8 +103,13 @@ export function EventModal({ defaultDate, event, onClose, onSuccess }: EventModa
       <div className="modal-panel">
         {/* Header */}
         <div className="modal-header">
-          <h2 className="modal-title">{isEdit ? "Editar evento" : "Novo evento ✨"}</h2>
-          <button className="modal-close" onClick={onClose} aria-label="Fechar">✕</button>
+          <h2 className="modal-title" style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            {!isEdit ? <AppIcon name="sparkles" size={22} className="text-primary" /> : null}
+            {isEdit ? "Editar evento" : "Novo evento"}
+          </h2>
+          <button type="button" className="modal-close" onClick={onClose} aria-label="Fechar">
+            <AppIcon name="x" size={18} />
+          </button>
         </div>
 
         <form action={handleSubmit} className="modal-form">
@@ -180,14 +192,16 @@ export function EventModal({ defaultDate, event, onClose, onSuccess }: EventModa
           <div className="form-row">
             <label className="form-label">Humor</label>
             <div className="mood-picker">
-              {moodEmojis.map((emoji) => (
+              {moodIconOptions.map(({ id, label }) => (
                 <button
-                  key={emoji} type="button"
-                  className={`mood-btn ${selectedMood === emoji ? "mood-btn-active" : ""}`}
-                  onClick={() => setSelectedMood(selectedMood === emoji ? "" : emoji)}
-                  aria-label={`Humor ${emoji}`}
+                  key={id}
+                  type="button"
+                  className={`mood-btn ${selectedMood === id ? "mood-btn-active" : ""}`}
+                  onClick={() => setSelectedMood(selectedMood === id ? "" : id)}
+                  aria-label={`Humor: ${label}`}
+                  title={label}
                 >
-                  {emoji}
+                  <AppIcon name={id} size={22} />
                 </button>
               ))}
             </div>
@@ -200,7 +214,9 @@ export function EventModal({ defaultDate, event, onClose, onSuccess }: EventModa
               {tags.map((tag) => (
                 <span key={tag} className="tag-chip">
                   #{tag}
-                  <button type="button" onClick={() => removeTag(tag)} className="tag-remove" aria-label={`Remover tag ${tag}`}>✕</button>
+                  <button type="button" onClick={() => removeTag(tag)} className="tag-remove" aria-label={`Remover tag ${tag}`}>
+                    <AppIcon name="x" size={14} />
+                  </button>
                 </span>
               ))}
               <input
@@ -240,11 +256,15 @@ export function EventModal({ defaultDate, event, onClose, onSuccess }: EventModa
           <div className="form-grid-2">
             <label className="form-toggle">
               <input type="checkbox" name="isFavorite" value="true" defaultChecked={event?.isFavorite} />
-              <span>⭐ Favorito</span>
+              <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+                <AppIcon name="star" size={16} /> Favorito
+              </span>
             </label>
             <label className="form-toggle">
               <input type="checkbox" name="isRecurring" value="true" defaultChecked={event?.isRecurring} />
-              <span>🔄 Recorrente</span>
+              <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+                <AppIcon name="rotate-cw" size={16} /> Recorrente
+              </span>
             </label>
           </div>
 

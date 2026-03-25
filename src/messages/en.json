@@ -66,7 +66,7 @@
   "dashboard": {
     "daysTogether": "Days together",
     "todayInHistory": "Today in history",
-    "noHistoryToday": "No special memories on this date... yet! 😊",
+    "noHistoryToday": "No special memories on this date... yet!",
     "favorites": "Favorites",
     "noFavorites": "Mark events as favorites to see them here.",
     "dailyMessage": "Daily message",
@@ -125,7 +125,7 @@
     "inviteCodeDesc": "Share this code with your partner:",
     "enterCode": "Enter code",
     "enterCodeDesc": "Enter your partner's invite code:",
-    "linked": "Couple linked! 🎉",
+    "linked": "Couple linked!",
     "codeExpired": "Code expired or invalid.",
     "alreadyLinked": "You are already linked to a couple."
   },

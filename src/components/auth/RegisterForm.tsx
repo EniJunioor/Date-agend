@@ -1,7 +1,10 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { registerAction } from "@/app/actions/auth";
+import {
+  registerAction,
+  resendVerificationEmailAction,
+} from "@/app/actions/auth";
 import { signIn } from "next-auth/react";
 
 function GoogleGlyph() {
@@ -36,11 +39,19 @@ function passwordStrengthScore(pwd: string): number {
   return Math.min(4, score);
 }
 
+type DoneState = {
+  email: string;
+  emailSent: boolean;
+  emailError?: string;
+};
+
 export function RegisterForm() {
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState<string | null>(null);
+  const [done, setDone] = useState<DoneState | null>(null);
   const [password, setPassword] = useState("");
+  const [resendPending, setResendPending] = useState(false);
+  const [resendMsg, setResendMsg] = useState<string | null>(null);
 
   const strength = passwordStrengthScore(password);
 
@@ -71,20 +82,88 @@ export function RegisterForm() {
       if (result?.error) {
         setError(result.error);
       } else if (result?.success) {
-        setSuccess(result.email ?? email);
+        setDone({
+          email: result.email ?? email,
+          emailSent: result.emailSent !== false,
+          emailError: result.emailError,
+        });
       }
     });
   }
 
-  if (success) {
+  async function handleResendVerification() {
+    if (!done?.email) return;
+    setResendMsg(null);
+    setResendPending(true);
+    const fd = new FormData();
+    fd.set("email", done.email);
+    const r = await resendVerificationEmailAction(fd);
+    setResendPending(false);
+    if ("error" in r && r.error) {
+      setResendMsg(r.error);
+    } else {
+      setResendMsg(
+        "Se existir cadastro pendente com esse e-mail, reenviamos o link. Confira a caixa de entrada e o spam."
+      );
+    }
+  }
+
+  if (done) {
     return (
       <div>
         <h2 className="auth-split-page-title" style={{ marginBottom: "0.5rem" }}>
           Verifique seu e-mail
         </h2>
-        <p className="auth-split-page-sub" style={{ marginBottom: 0 }}>
-          Enviamos um link de confirmação para <strong>{success}</strong>.
-        </p>
+        {done.emailSent ? (
+          <p className="auth-split-page-sub" style={{ marginBottom: "1rem" }}>
+            Enviamos um link de confirmação para <strong>{done.email}</strong>.
+          </p>
+        ) : (
+          <>
+            <div
+              className="auth-split-alert auth-split-alert--warn"
+              role="status"
+              style={{ marginBottom: "1rem", textAlign: "left" }}
+            >
+              <strong>Não conseguimos enviar o e-mail agora.</strong>
+              {done.emailError ? (
+                <span style={{ display: "block", marginTop: "0.5rem" }}>
+                  Detalhe: {done.emailError}
+                </span>
+              ) : null}
+              <span style={{ display: "block", marginTop: "0.65rem", fontSize: "0.85rem" }}>
+                Confira se <code style={{ fontSize: "0.8em" }}>RESEND_API_KEY</code> está
+                correta no servidor, se o domínio do remetente está verificado no painel da
+                Resend e se o e-mail de destino está autorizado (em testes, às vezes só o
+                e-mail da conta Resend recebe).
+              </span>
+            </div>
+            <p className="auth-split-page-sub" style={{ marginBottom: "1rem" }}>
+              Sua conta em <strong>{done.email}</strong> foi criada — assim que o envio
+              funcionar, use o botão abaixo para receber o link.
+            </p>
+          </>
+        )}
+        {resendMsg ? (
+          <div
+            className={`auth-split-alert${
+              resendMsg.startsWith("Se existir") ? " auth-split-alert--warn" : " auth-split-alert--err"
+            }`}
+            role="status"
+            style={{ marginBottom: "1rem" }}
+          >
+            {resendMsg}
+          </div>
+        ) : null}
+        <button
+          type="button"
+          className="auth-split-btn-primary"
+          style={{ marginTop: 0 }}
+          disabled={resendPending}
+          onClick={handleResendVerification}
+        >
+          {resendPending ? "Enviando..." : "Reenviar link de confirmação"}
+        </button>
       </div>
     );
   }

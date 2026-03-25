@@ -7,6 +7,7 @@ import Link from "next/link";
 import { deleteEventAction, toggleFavoriteAction } from "@/app/actions/events";
 import { formatEventDate, categoryColors, categoryLabels } from "@/lib/utils";
 import { EventModal } from "@/components/calendar/EventModal";
+import { AppIcon, reactionIconOptions, resolveMoodIconKey } from "@/components/ui/app-icon";
 
 type Photo = {
   id: string;
@@ -37,8 +38,6 @@ interface EventDetailClientProps {
   event: Event;
   userId: string;
 }
-
-const REACTIONS = ["❤️", "😍", "🎉", "😊", "🥰", "💕", "🔥", "✨"];
 
 export function EventDetailClient({ event, userId }: EventDetailClientProps) {
   const router = useRouter();
@@ -120,20 +119,40 @@ export function EventDetailClient({ event, userId }: EventDetailClientProps) {
         <div className="event-hero-overlay" />
         <div className="event-hero-content">
           <div className="event-breadcrumb">
-            <Link href="/calendar" className="breadcrumb-link">← Calendário</Link>
+            <Link href="/calendar" className="breadcrumb-link" style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+              <AppIcon name="chevron-left" size={16} /> Calendário
+            </Link>
           </div>
           <div className="event-category-badge">
             {categoryLabels[event.category]}
           </div>
           <h1 className="event-title">
-            {event.moodEmoji && <span className="event-mood-large">{event.moodEmoji}</span>}
+            {event.moodEmoji && (
+              <span className="event-mood-large">
+                <AppIcon name={resolveMoodIconKey(event.moodEmoji)} size={32} strokeWidth={1.5} />
+              </span>
+            )}
             {event.title}
           </h1>
           <div className="event-meta-row">
-            <span>📅 {formatEventDate(event.eventDate)}</span>
-            {event.eventTime && <span>🕐 {event.eventTime.substring(0, 5)}</span>}
-            {event.location && <span>📍 {event.location}</span>}
-            {event.isRecurring && <span>🔄 {event.recurrenceType}</span>}
+            <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+              <AppIcon name="calendar" size={16} /> {formatEventDate(event.eventDate)}
+            </span>
+            {event.eventTime && (
+              <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+                <AppIcon name="clock" size={16} /> {event.eventTime.substring(0, 5)}
+              </span>
+            )}
+            {event.location && (
+              <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+                <AppIcon name="map-pin" size={16} /> {event.location}
+              </span>
+            )}
+            {event.isRecurring && (
+              <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+                <AppIcon name="rotate-cw" size={16} /> {event.recurrenceType}
+              </span>
+            )}
           </div>
         </div>
         <div className="event-hero-actions">
@@ -143,13 +162,13 @@ export function EventDetailClient({ event, userId }: EventDetailClientProps) {
             title={isFavorite ? "Remover dos favoritos" : "Adicionar aos favoritos"}
             aria-label="Favorito"
           >
-            {isFavorite ? "⭐" : "☆"}
+            <AppIcon name="star" size={18} fill={isFavorite ? "currentColor" : "none"} />
           </button>
           <button className="hero-action-btn" onClick={() => setShowEdit(true)} title="Editar" aria-label="Editar evento">
-            ✏️
+            <AppIcon name="pencil" size={18} />
           </button>
           <button className="hero-action-btn hero-action-danger" onClick={() => setShowDelete(true)} title="Excluir" aria-label="Excluir evento">
-            🗑️
+            <AppIcon name="trash" size={18} />
           </button>
         </div>
       </div>
@@ -160,7 +179,9 @@ export function EventDetailClient({ event, userId }: EventDetailClientProps) {
           {/* Description */}
           {event.description && (
             <div className="event-section">
-              <h2 className="section-heading">📝 Descrição</h2>
+              <h2 className="section-heading" style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                <AppIcon name="book-open" size={18} /> Descrição
+              </h2>
               <p className="event-description">{event.description}</p>
             </div>
           )}
@@ -168,7 +189,9 @@ export function EventDetailClient({ event, userId }: EventDetailClientProps) {
           {/* Tags */}
           {(event.tags as string[] | null)?.length ? (
             <div className="event-section">
-              <h2 className="section-heading">🏷️ Tags</h2>
+              <h2 className="section-heading" style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                <AppIcon name="tag" size={18} /> Tags
+              </h2>
               <div className="event-tags">
                 {(event.tags as string[]).map((tag) => (
                   <span key={tag} className="event-tag">#{tag}</span>
@@ -179,11 +202,13 @@ export function EventDetailClient({ event, userId }: EventDetailClientProps) {
 
           {/* Reactions */}
           <div className="event-section">
-            <h2 className="section-heading">💬 Reações</h2>
+            <h2 className="section-heading" style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <AppIcon name="message-square" size={18} /> Reações
+            </h2>
             <div className="reactions-row">
-              {REACTIONS.map((emoji) => (
-                <button key={emoji} className="reaction-btn" title={`Reagir com ${emoji}`}>
-                  {emoji}
+              {reactionIconOptions.map((id) => (
+                <button key={id} type="button" className="reaction-btn" title="Reagir" aria-label={`Reagir com ${id}`}>
+                  <AppIcon name={id} size={22} />
                 </button>
               ))}
             </div>
@@ -192,7 +217,9 @@ export function EventDetailClient({ event, userId }: EventDetailClientProps) {
           {/* Photos */}
           <div className="event-section">
             <div className="section-header-row">
-              <h2 className="section-heading">🖼️ Fotos ({photos.length})</h2>
+              <h2 className="section-heading" style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                <AppIcon name="images" size={18} /> Fotos ({photos.length})
+              </h2>
               <button
                 className="btn-upload"
                 onClick={() => fileInputRef.current?.click()}
@@ -216,7 +243,9 @@ export function EventDetailClient({ event, userId }: EventDetailClientProps) {
 
             {photos.length === 0 ? (
               <div className="photos-empty">
-                <div style={{ fontSize: 40, marginBottom: 8 }}>📷</div>
+                <div style={{ display: "flex", justifyContent: "center", marginBottom: 8, color: "var(--foreground-muted)" }}>
+                  <AppIcon name="camera" size={40} strokeWidth={1.25} />
+                </div>
                 <p>Nenhuma foto ainda. Adicione fotos para guardar este momento!</p>
               </div>
             ) : (
@@ -249,7 +278,7 @@ export function EventDetailClient({ event, userId }: EventDetailClientProps) {
         <aside className="event-sidebar">
           <div className="sidebar-card">
             <div className="sidebar-row">
-              <span className="sidebar-icon">📅</span>
+              <span className="sidebar-icon"><AppIcon name="calendar" size={18} /></span>
               <div>
                 <div className="sidebar-label">Data</div>
                 <div className="sidebar-value">{formatEventDate(event.eventDate)}</div>
@@ -257,7 +286,7 @@ export function EventDetailClient({ event, userId }: EventDetailClientProps) {
             </div>
             {event.eventTime && (
               <div className="sidebar-row">
-                <span className="sidebar-icon">🕐</span>
+                <span className="sidebar-icon"><AppIcon name="clock" size={18} /></span>
                 <div>
                   <div className="sidebar-label">Horário</div>
                   <div className="sidebar-value">{event.eventTime.substring(0, 5)}</div>
@@ -266,7 +295,7 @@ export function EventDetailClient({ event, userId }: EventDetailClientProps) {
             )}
             {event.location && (
               <div className="sidebar-row">
-                <span className="sidebar-icon">📍</span>
+                <span className="sidebar-icon"><AppIcon name="map-pin" size={18} /></span>
                 <div>
                   <div className="sidebar-label">Local</div>
                   <div className="sidebar-value">{event.location}</div>
@@ -274,7 +303,7 @@ export function EventDetailClient({ event, userId }: EventDetailClientProps) {
               </div>
             )}
             <div className="sidebar-row">
-              <span className="sidebar-icon">🏷️</span>
+              <span className="sidebar-icon"><AppIcon name="tag" size={18} /></span>
               <div>
                 <div className="sidebar-label">Categoria</div>
                 <div className="sidebar-value" style={{ color: accentColor }}>
@@ -284,10 +313,14 @@ export function EventDetailClient({ event, userId }: EventDetailClientProps) {
             </div>
             {event.moodEmoji && (
               <div className="sidebar-row">
-                <span className="sidebar-icon">😊</span>
+                <span className="sidebar-icon">
+                  <AppIcon name={resolveMoodIconKey(event.moodEmoji)} size={18} />
+                </span>
                 <div>
                   <div className="sidebar-label">Humor</div>
-                  <div className="sidebar-value">{event.moodEmoji}</div>
+                  <div className="sidebar-value" style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                    <AppIcon name={resolveMoodIconKey(event.moodEmoji)} size={20} />
+                  </div>
                 </div>
               </div>
             )}
@@ -298,12 +331,14 @@ export function EventDetailClient({ event, userId }: EventDetailClientProps) {
             onClick={() => {
               navigator.share?.({
                 title: event.title,
-                text: `${event.moodEmoji ?? ""} ${event.title} — ${formatEventDate(event.eventDate)}`,
+                text: `${event.title} — ${formatEventDate(event.eventDate)}`,
                 url: window.location.href,
               });
             }}
           >
-            📤 Compartilhar memória
+            <span style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8 }}>
+              <AppIcon name="share-2" size={18} /> Compartilhar memória
+            </span>
           </button>
         </aside>
       </div>
@@ -316,12 +351,18 @@ export function EventDetailClient({ event, userId }: EventDetailClientProps) {
           role="dialog"
           aria-modal
         >
-          <button className="lb-close" onClick={() => setLightboxPhoto(null)}>✕</button>
-          <button className="lb-nav lb-prev" onClick={(e) => { e.stopPropagation(); navLightbox(-1); }}>‹</button>
+          <button type="button" className="lb-close" onClick={() => setLightboxPhoto(null)} aria-label="Fechar">
+            <AppIcon name="x" size={20} />
+          </button>
+          <button type="button" className="lb-nav lb-prev" onClick={(e) => { e.stopPropagation(); navLightbox(-1); }} aria-label="Anterior">
+            <AppIcon name="chevron-left" size={28} />
+          </button>
           <div className="lb-img-wrap" onClick={(e) => e.stopPropagation()}>
             <Image src={lightboxPhoto.url} alt={lightboxPhoto.caption ?? "Foto"} fill sizes="90vw" style={{ objectFit: "contain" }} priority />
           </div>
-          <button className="lb-nav lb-next" onClick={(e) => { e.stopPropagation(); navLightbox(1); }}>›</button>
+          <button type="button" className="lb-nav lb-next" onClick={(e) => { e.stopPropagation(); navLightbox(1); }} aria-label="Próxima">
+            <AppIcon name="chevron-right" size={28} />
+          </button>
           <div className="lb-counter">{lightboxIdx + 1} / {photos.length}</div>
         </div>
       )}
@@ -339,7 +380,9 @@ export function EventDetailClient({ event, userId }: EventDetailClientProps) {
       {showDelete && (
         <div className="confirm-backdrop" onClick={() => setShowDelete(false)}>
           <div className="confirm-panel" onClick={(e) => e.stopPropagation()}>
-            <div className="confirm-icon">🗑️</div>
+            <div className="confirm-icon">
+              <AppIcon name="trash" size={40} strokeWidth={1.25} />
+            </div>
             <h3 className="confirm-title">Excluir evento?</h3>
             <p className="confirm-desc">
               Tem certeza que deseja excluir <strong>&ldquo;{event.title}&rdquo;</strong>?<br />
@@ -402,7 +445,7 @@ const eventDetailStyles = `
     line-height: 1.15; margin-bottom: 12px;
     display: flex; align-items: center; gap: 10px;
   }
-  .event-mood-large { font-size: 32px; }
+  .event-mood-large { display: flex; align-items: center; }
   .event-meta-row {
     display: flex; flex-wrap: wrap; gap: 12px;
     font-size: 14px; opacity: 0.85;
@@ -440,7 +483,8 @@ const eventDetailStyles = `
   /* Reactions */
   .reactions-row { display: flex; flex-wrap: wrap; gap: 8px; }
   .reaction-btn {
-    font-size: 22px; padding: 6px 10px; border-radius: var(--radius-md);
+    display: flex; align-items: center; justify-content: center;
+    padding: 6px 10px; border-radius: var(--radius-md);
     border: 1px solid var(--border); background: var(--card);
     cursor: pointer; transition: all 0.15s;
   }
@@ -483,12 +527,13 @@ const eventDetailStyles = `
     display: flex; flex-direction: column; gap: 14px;
   }
   .sidebar-row { display: flex; gap: 12px; align-items: flex-start; }
-  .sidebar-icon { font-size: 18px; width: 24px; text-align: center; flex-shrink: 0; margin-top: 2px; }
+  .sidebar-icon { width: 24px; flex-shrink: 0; margin-top: 2px; display: flex; align-items: center; justify-content: center; color: var(--primary); }
   .sidebar-label { font-size: 11px; color: var(--foreground-subtle); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
   .sidebar-value { font-size: 14px; font-weight: 600; color: var(--foreground); margin-top: 2px; }
 
   .btn-share {
     width: 100%; padding: 11px; border-radius: var(--radius-md);
+    display: flex; align-items: center; justify-content: center;
     border: 1px solid var(--border); background: var(--background);
     color: var(--foreground); font-size: 14px; font-weight: 600;
     cursor: pointer; transition: all 0.15s;
@@ -535,7 +580,7 @@ const eventDetailStyles = `
     animation: slideUp 0.25s ease;
   }
   @keyframes slideUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
-  .confirm-icon { font-size: 40px; margin-bottom: 12px; }
+  .confirm-icon { display: flex; justify-content: center; margin-bottom: 12px; color: #dc2626; }
   .confirm-title { font-family: var(--font-display); font-size: 20px; font-weight: 800; color: var(--foreground); margin-bottom: 8px; }
   .confirm-desc { font-size: 14px; color: var(--foreground-muted); line-height: 1.6; margin-bottom: 24px; }
   .confirm-actions { display: flex; gap: 10px; justify-content: center; }

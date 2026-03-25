@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { Metadata } from "next";
+import { AppIcon, type AppIconName } from "@/components/ui/app-icon";
 
 export const metadata: Metadata = {
   title: "Calendário do Casal — Registre seus momentos especiais",
@@ -14,7 +15,9 @@ export default function LandingPage() {
       <header className="landing-header">
         <div className="landing-header-inner">
           <div className="logo">
-            <span className="logo-icon">❤️</span>
+            <span className="logo-icon">
+              <AppIcon name="heart" size={26} strokeWidth={2} className="text-primary" />
+            </span>
             <span className="logo-text">Calendário do Casal</span>
           </div>
           <nav className="header-nav">
@@ -37,7 +40,7 @@ export default function LandingPage() {
         </div>
         <div className="hero-content">
           <div className="hero-badge">
-            <span>✨</span> Para casais apaixonados
+            <AppIcon name="sparkles" size={16} className="inline-icon" /> Para casais apaixonados
           </div>
           <h1 className="hero-title">
             Cada momento merece
@@ -70,16 +73,20 @@ export default function LandingPage() {
             </div>
             <div className="preview-counter">
               <div className="counter-number">847</div>
-              <div className="counter-label">dias juntos ❤️</div>
+              <div className="counter-label" style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 6 }}>
+                dias juntos <AppIcon name="heart" size={14} />
+              </div>
             </div>
             <div className="preview-events">
               {[
-                { emoji: "🎉", title: "3 anos juntos", date: "15 Mar" },
-                { emoji: "✈️", title: "Viagem a Paris", date: "22 Mar" },
-                { emoji: "🍽️", title: "Jantar especial", date: "28 Mar" },
+                { icon: "party-popper" as AppIconName, title: "3 anos juntos", date: "15 Mar" },
+                { icon: "plane" as AppIconName, title: "Viagem a Paris", date: "22 Mar" },
+                { icon: "utensils-crossed" as AppIconName, title: "Jantar especial", date: "28 Mar" },
               ].map((e) => (
                 <div key={e.title} className="preview-event">
-                  <span className="preview-event-emoji">{e.emoji}</span>
+                  <span className="preview-event-emoji">
+                    <AppIcon name={e.icon} size={20} />
+                  </span>
                   <div>
                     <div className="preview-event-title">{e.title}</div>
                     <div className="preview-event-date">{e.date}</div>
@@ -102,7 +109,9 @@ export default function LandingPage() {
           <div className="features-grid">
             {features.map((f) => (
               <div key={f.title} className="feature-card">
-                <div className="feature-icon">{f.icon}</div>
+                <div className="feature-icon">
+                  <AppIcon name={f.icon} size={28} />
+                </div>
                 <h3 className="feature-title">{f.title}</h3>
                 <p className="feature-desc">{f.desc}</p>
               </div>
@@ -118,16 +127,16 @@ export default function LandingPage() {
           <p className="cta-desc">
             Crie sua conta gratuitamente e convide seu/sua parceiro(a).
           </p>
-          <Link href="/register" className="btn btn-primary btn-lg">
-            Criar conta agora ❤️
+          <Link href="/register" className="btn btn-primary btn-lg" style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
+            Criar conta agora <AppIcon name="heart" size={18} />
           </Link>
         </div>
       </section>
 
       {/* ── Footer ──────────────────────────────────────────────────────── */}
       <footer className="landing-footer">
-        <p>
-          Feito com ❤️ para casais · &copy; {new Date().getFullYear()} Calendário do Casal
+        <p style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8, flexWrap: "wrap" }}>
+          Feito com <AppIcon name="heart" size={16} /> para casais · &copy; {new Date().getFullYear()} Calendário do Casal
         </p>
       </footer>
 
@@ -136,34 +145,34 @@ export default function LandingPage() {
   );
 }
 
-const features = [
+const features: { icon: AppIconName; title: string; desc: string }[] = [
   {
-    icon: "📅",
+    icon: "calendar",
     title: "Calendário compartilhado",
     desc: "Visualize os eventos do casal em modos mensal, semanal e agenda. Crie, edite e organize facilmente.",
   },
   {
-    icon: "🖼️",
+    icon: "images",
     title: "Galeria de fotos",
     desc: "Adicione fotos a cada evento e crie um álbum de memórias que vocês podem rever a qualquer momento.",
   },
   {
-    icon: "⏳",
+    icon: "history",
     title: "Linha do tempo",
     desc: "Acompanhe a história do relacionamento em uma timeline bonita, com contador de dias juntos.",
   },
   {
-    icon: "🔔",
+    icon: "bell",
     title: "Lembretes automáticos",
     desc: "Receba notificações por e-mail e push antes de datas importantes. Nunca esqueça um aniversário.",
   },
   {
-    icon: "🏆",
+    icon: "trophy",
     title: "Conquistas e badges",
     desc: "Desbloqueie conquistas especiais ao atingir marcos do relacionamento. Gamificação para o amor!",
   },
   {
-    icon: "⏰",
+    icon: "hourglass",
     title: "Cápsula do tempo",
     desc: "Crie mensagens e fotos para abrir em uma data futura. Uma surpresa guardada com carinho.",
   },
@@ -187,7 +196,7 @@ const landingStyles = `
     height: 64px;
   }
   .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
-  .logo-icon { font-size: 22px; }
+  .logo-icon { display: flex; align-items: center; justify-content: center; }
   .logo-text { font-family: var(--font-display); font-weight: 700; font-size: 17px; color: var(--primary); }
   .header-nav { display: flex; align-items: center; gap: 12px; }
 
@@ -288,7 +297,7 @@ const landingStyles = `
     border-radius: var(--radius-md);
     padding: 10px 12px;
   }
-  .preview-event-emoji { font-size: 18px; }
+  .preview-event-emoji { display: flex; align-items: center; justify-content: center; flex-shrink: 0; width: 28px; color: var(--primary); }
   .preview-event-title { font-size: 13px; font-weight: 600; color: var(--foreground); }
   .preview-event-date { font-size: 11px; color: var(--foreground-muted); }
 
@@ -322,7 +331,7 @@ const landingStyles = `
     box-shadow: var(--shadow-md);
     transform: translateY(-2px);
   }
-  .feature-icon { font-size: 32px; margin-bottom: 14px; }
+  .feature-icon { display: flex; align-items: center; justify-content: center; margin-bottom: 14px; color: var(--primary); }
   .feature-title {
     font-size: 16px; font-weight: 700;
     color: var(--foreground); margin-bottom: 8px;

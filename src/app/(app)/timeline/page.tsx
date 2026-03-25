@@ -7,6 +7,7 @@ import { users, couples } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 import { getDaysTogether, formatEventDate, categoryColors, categoryLabels } from "@/lib/utils";
 import Link from "next/link";
+import { AppIcon, resolveMoodIconKey } from "@/components/ui/app-icon";
 
 export const metadata: Metadata = { title: "Linha do Tempo" };
 
@@ -61,7 +62,9 @@ export default async function TimelinePage() {
       {/* ── Timeline ────────────────────────────────────────────────────── */}
       {events.length === 0 ? (
         <div className="tl-empty">
-          <div className="tl-empty-icon">📖</div>
+          <div className="tl-empty-icon">
+            <AppIcon name="book-open" size={52} strokeWidth={1.25} />
+          </div>
           <h3>Sua história começa aqui</h3>
           <p>Crie o primeiro evento para ver a linha do tempo do relacionamento.</p>
           <Link href="/calendar" className="btn-primary">+ Criar primeiro evento</Link>
@@ -96,10 +99,18 @@ export default async function TimelinePage() {
                           >
                             {categoryLabels[event.category]}
                           </span>
-                          {event.isFavorite && <span title="Favorito">⭐</span>}
+                          {event.isFavorite && (
+                            <span title="Favorito" style={{ display: "inline-flex" }}>
+                              <AppIcon name="star" size={14} fill="currentColor" />
+                            </span>
+                          )}
                         </div>
-                        <h3 className="tl-card-title">
-                          {event.moodEmoji && <span>{event.moodEmoji} </span>}
+                        <h3 className="tl-card-title" style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+                          {event.moodEmoji && (
+                            <span style={{ display: "inline-flex" }}>
+                              <AppIcon name={resolveMoodIconKey(event.moodEmoji)} size={20} />
+                            </span>
+                          )}
                           {event.title}
                         </h3>
                         <p className="tl-card-date">
@@ -126,9 +137,13 @@ export default async function TimelinePage() {
                       }}
                     >
                       {event.moodEmoji ? (
-                        <span className="tl-dot-emoji">{event.moodEmoji}</span>
+                        <span className="tl-dot-emoji">
+                          <AppIcon name={resolveMoodIconKey(event.moodEmoji)} size={18} strokeWidth={2} color="white" />
+                        </span>
                       ) : (
-                        <span className="tl-dot-icon">❤️</span>
+                        <span className="tl-dot-icon">
+                          <AppIcon name="heart" size={16} fill="white" color="white" strokeWidth={1.5} />
+                        </span>
                       )}
                     </div>
                   </div>
@@ -139,7 +154,9 @@ export default async function TimelinePage() {
 
           {/* Start of story */}
           <div className="tl-start">
-            <div className="tl-start-dot">💑</div>
+            <div className="tl-start-dot">
+              <AppIcon name="users" size={26} strokeWidth={1.75} color="white" />
+            </div>
             <p className="tl-start-label">
               Início do relacionamento<br />
               <strong>{formatEventDate(couple.startDate as string)}</strong>
@@ -185,7 +202,7 @@ const timelineStyles = `
     text-align: center; display: flex; flex-direction: column;
     align-items: center; gap: 12px;
   }
-  .tl-empty-icon { font-size: 52px; margin-bottom: 4px; }
+  .tl-empty-icon { display: flex; justify-content: center; margin-bottom: 4px; color: var(--primary); }
   .tl-empty h3 { font-family: var(--font-display); font-size: 22px; font-weight: 700; color: var(--foreground); }
   .tl-empty p { font-size: 14px; color: var(--foreground-muted); max-width: 340px; line-height: 1.6; }
   .btn-primary {
@@ -270,8 +287,8 @@ const timelineStyles = `
   @media (max-width: 768px) {
     .tl-dot { left: 24px; }
   }
-  .tl-dot-emoji { font-size: 16px; }
-  .tl-dot-icon { font-size: 14px; }
+  .tl-dot-emoji { display: flex; align-items: center; justify-content: center; }
+  .tl-dot-icon { display: flex; align-items: center; justify-content: center; }
 
   /* Start of story */
   .tl-start {
@@ -282,7 +299,7 @@ const timelineStyles = `
     width: 56px; height: 56px; border-radius: 50%;
     background: linear-gradient(135deg, var(--primary), var(--primary-light));
     display: flex; align-items: center; justify-content: center;
-    font-size: 24px; box-shadow: var(--shadow-primary);
+    color: white; box-shadow: var(--shadow-primary);
   }
   .tl-start-label { text-align: center; font-size: 13px; color: var(--foreground-muted); line-height: 1.5; }
   .tl-start-label strong { color: var(--foreground); }

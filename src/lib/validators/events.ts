@@ -20,7 +20,7 @@ export const createEventSchema = z.object({
     "rotina",
     "outro",
   ]),
-  moodEmoji: z.string().max(10).optional(),
+  moodEmoji: z.string().max(32).optional(),
   isFavorite: z.boolean().default(false),
   tags: z.array(z.string().max(30)).max(10).default([]),
   location: z.string().max(200).optional(),

@@ -2,8 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { db } from "@/lib/db";
-import { timeCapsules } from "@/lib/db/schema";
+import { AppIcon } from "@/components/ui/app-icon";
 
 type Capsule = {
   id: string;
@@ -19,18 +18,6 @@ interface CapsulesClientProps {
   capsules: Capsule[];
   userId: string;
   coupleId: string;
-}
-
-async function createCapsuleAction(data: {
-  title: string;
-  content: string;
-  openAt: string;
-  coupleId: string;
-  userId: string;
-}) {
-  "use server";
-  // This would be a proper server action in a real setup
-  // Using inline for simplicity
 }
 
 export function CapsulesClient({ capsules, userId, coupleId }: CapsulesClientProps) {
@@ -88,7 +75,9 @@ export function CapsulesClient({ capsules, userId, coupleId }: CapsulesClientPro
       {/* Header */}
       <div className="capsules-header">
         <div>
-          <h2 className="capsules-title">Cápsulas do Tempo ⏳</h2>
+          <h2 className="capsules-title" style={{ display: "flex", alignItems: "center", gap: 10 }}>
+            <AppIcon name="hourglass" size={24} /> Cápsulas do Tempo
+          </h2>
           <p className="capsules-sub">Mensagens para o futuro · {capsules.length} cápsulas criadas</p>
         </div>
         <button className="btn-create-capsule" onClick={() => setShowCreate(true)}>
@@ -99,7 +88,9 @@ export function CapsulesClient({ capsules, userId, coupleId }: CapsulesClientPro
       {/* Empty state */}
       {capsules.length === 0 && (
         <div className="capsules-empty">
-          <div className="capsules-empty-icon">⏳</div>
+          <div className="capsules-empty-icon">
+            <AppIcon name="hourglass" size={48} strokeWidth={1.5} />
+          </div>
           <h3>Nenhuma cápsula criada ainda</h3>
           <p>
             Crie uma mensagem carinhosa para abrir em uma data especial no futuro —
@@ -128,7 +119,13 @@ export function CapsulesClient({ capsules, userId, coupleId }: CapsulesClientPro
             >
               <div className="capsule-glow" />
               <div className="capsule-icon">
-                {locked ? "🔒" : ready ? "🎁" : "📖"}
+                {locked ? (
+                  <AppIcon name="lock" size={28} />
+                ) : ready ? (
+                  <AppIcon name="gift" size={28} />
+                ) : (
+                  <AppIcon name="book-open" size={28} />
+                )}
               </div>
               <h3 className="capsule-name">
                 {locked ? "Cápsula selada" : capsule.title}
@@ -142,7 +139,9 @@ export function CapsulesClient({ capsules, userId, coupleId }: CapsulesClientPro
                     </p>
                   </>
                 ) : ready ? (
-                  <span className="status-badge status-ready">🎁 Pronta para abrir!</span>
+                  <span className="status-badge status-ready" style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+                    <AppIcon name="gift" size={14} /> Pronta para abrir
+                  </span>
                 ) : (
                   <span className="status-badge status-opened">
                     Aberta em {new Date(capsule.openedAt!).toLocaleDateString("pt-BR")}
@@ -160,10 +159,16 @@ export function CapsulesClient({ capsules, userId, coupleId }: CapsulesClientPro
           <div className="capsule-modal" onClick={(e) => e.stopPropagation()}>
             <div className="capsule-modal-header">
               <div className="capsule-modal-icon">
-                {canOpen(selectedCapsule) ? "🎁" : "📖"}
+                {canOpen(selectedCapsule) ? (
+                  <AppIcon name="gift" size={36} />
+                ) : (
+                  <AppIcon name="book-open" size={36} />
+                )}
               </div>
               <h2 className="capsule-modal-title">{selectedCapsule.title}</h2>
-              <button className="modal-close" onClick={() => setSelectedCapsule(null)}>✕</button>
+              <button type="button" className="modal-close" onClick={() => setSelectedCapsule(null)} aria-label="Fechar">
+                <AppIcon name="x" size={18} />
+              </button>
             </div>
             <div className="capsule-modal-body">
               <p className="capsule-content">{selectedCapsule.content}</p>
@@ -182,8 +187,12 @@ export function CapsulesClient({ capsules, userId, coupleId }: CapsulesClientPro
         <div className="modal-backdrop" onClick={() => setShowCreate(false)}>
           <div className="capsule-create-modal" onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
-              <h2 className="modal-title">Nova Cápsula do Tempo ⏳</h2>
-              <button className="modal-close" onClick={() => setShowCreate(false)}>✕</button>
+              <h2 className="modal-title" style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                <AppIcon name="hourglass" size={22} /> Nova Cápsula do Tempo
+              </h2>
+              <button type="button" className="modal-close" onClick={() => setShowCreate(false)} aria-label="Fechar">
+                <AppIcon name="x" size={18} />
+              </button>
             </div>
             <form action={handleCreate} className="capsule-form">
               {error && <div className="form-error">{error}</div>}
@@ -223,7 +232,11 @@ export function CapsulesClient({ capsules, userId, coupleId }: CapsulesClientPro
                   Cancelar
                 </button>
                 <button type="submit" className="btn-save" disabled={isPending}>
-                  {isPending ? "Criando..." : "Selar cápsula 🔒"}
+                  {isPending ? "Criando..." : (
+                    <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+                      Selar cápsula <AppIcon name="lock" size={16} />
+                    </span>
+                  )}
                 </button>
               </div>
             </form>
@@ -260,7 +273,7 @@ const capsulesStyles = `
     border-radius: var(--radius-xl); padding: 60px 40px;
     text-align: center; display: flex; flex-direction: column; align-items: center; gap: 14px;
   }
-  .capsules-empty-icon { font-size: 60px; }
+  .capsules-empty-icon { display: flex; justify-content: center; color: var(--primary); }
   .capsules-empty h3 { font-family: var(--font-display); font-size: 22px; font-weight: 800; color: var(--foreground); }
   .capsules-empty p { font-size: 14px; color: var(--foreground-muted); max-width: 360px; line-height: 1.7; }
 
@@ -289,7 +302,7 @@ const capsulesStyles = `
     background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%);
     top: -30px; right: -30px; pointer-events: none;
   }
-  .capsule-icon { font-size: 40px; position: relative; z-index: 1; }
+  .capsule-icon { display: flex; justify-content: center; position: relative; z-index: 1; color: var(--primary); }
   .capsule-name { font-family: var(--font-display); font-size: 16px; font-weight: 800; color: var(--foreground); }
   .capsule-status { display: flex; flex-direction: column; align-items: center; gap: 4px; }
   .status-badge {
@@ -320,7 +333,7 @@ const capsulesStyles = `
     background: linear-gradient(135deg, var(--primary-dark), var(--primary));
     padding: 28px 24px; text-align: center; color: white; position: relative;
   }
-  .capsule-modal-icon { font-size: 40px; margin-bottom: 8px; }
+  .capsule-modal-icon { display: flex; justify-content: center; margin-bottom: 8px; color: var(--primary); }
   .capsule-modal-title { font-family: var(--font-display); font-size: 22px; font-weight: 800; }
   .capsule-modal-body { padding: 24px; }
   .capsule-content { font-size: 16px; line-height: 1.8; color: var(--foreground); white-space: pre-wrap; }

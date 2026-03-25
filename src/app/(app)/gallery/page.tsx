@@ -5,18 +5,20 @@ import { db } from "@/lib/db";
 import { photos, events, users } from "@/lib/db/schema";
 import { eq, desc } from "drizzle-orm";
 import { GalleryGrid } from "@/components/gallery/GalleryGrid";
+import { AppIcon } from "@/components/ui/app-icon";
 
 export const metadata: Metadata = { title: "Galeria" };
 
 export default async function GalleryPage({
   searchParams,
 }: {
-  searchParams: { filter?: string };
+  searchParams: Promise<{ filter?: string }>;
 }) {
   const session = await auth();
   if (!session?.user?.id) redirect("/login");
   if (!session.user.coupleId) redirect("/invite");
 
+  const params = await searchParams;
   const coupleId = session.user.coupleId;
 
   const allPhotos = await db
@@ -36,7 +38,7 @@ export default async function GalleryPage({
     .orderBy(desc(photos.createdAt));
 
   const filtered =
-    searchParams.filter === "favorites"
+    params.filter === "favorites"
       ? allPhotos.filter((p) => p.isFavorite)
       : allPhotos;
 
@@ -45,7 +47,9 @@ export default async function GalleryPage({
       {/* ── Header ───────────────────────────────────────────────────────── */}
       <div className="gallery-header">
         <div>
-          <h2 className="gallery-title">Nossa Galeria 🖼️</h2>
+          <h2 className="gallery-title" style={{ display: "flex", alignItems: "center", gap: 10 }}>
+            <AppIcon name="images" size={28} /> Nossa Galeria
+          </h2>
           <p className="gallery-sub">
             {allPhotos.length}{" "}
             {allPhotos.length === 1 ? "foto" : "fotos"} · {
@@ -56,33 +60,37 @@ export default async function GalleryPage({
         <div className="gallery-filters">
           <a
             href="/gallery"
-            className={`filter-btn ${!searchParams.filter ? "filter-btn-active" : ""}`}
+            className={`filter-btn ${!params.filter ? "filter-btn-active" : ""}`}
           >
             Todas
           </a>
           <a
             href="/gallery?filter=favorites"
-            className={`filter-btn ${searchParams.filter === "favorites" ? "filter-btn-active" : ""}`}
+            className={`filter-btn ${params.filter === "favorites" ? "filter-btn-active" : ""}`}
           >
-            ⭐ Favoritas
+            <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+              <AppIcon name="star" size={14} /> Favoritas
+            </span>
           </a>
         </div>
       </div>
 
       {filtered.length === 0 ? (
         <div className="gallery-empty">
-          <div className="gallery-empty-icon">📷</div>
+          <div className="gallery-empty-icon">
+            <AppIcon name="camera" size={52} strokeWidth={1.25} />
+          </div>
           <h3>
-            {searchParams.filter === "favorites"
+            {params.filter === "favorites"
               ? "Nenhuma foto favorita ainda"
               : "Sua galeria está vazia"}
           </h3>
           <p>
-            {searchParams.filter === "favorites"
+            {params.filter === "favorites"
               ? "Marque fotos como favoritas nos eventos para vê-las aqui."
               : "Adicione fotos aos eventos para criar seu álbum de memórias."}
           </p>
-          {!searchParams.filter && (
+          {!params.filter && (
             <a href="/calendar" className="btn-add-photos">
               + Criar evento e adicionar fotos
             </a>
@@ -124,7 +132,7 @@ export default async function GalleryPage({
           text-align: center; display: flex; flex-direction: column;
           align-items: center; gap: 12px;
         }
-        .gallery-empty-icon { font-size: 52px; }
+        .gallery-empty-icon { display: flex; justify-content: center; color: var(--primary); }
         .gallery-empty h3 {
           font-family: var(--font-display); font-size: 20px; font-weight: 700;
           color: var(--foreground);

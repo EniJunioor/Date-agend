@@ -3,6 +3,7 @@
 import { useState, useTransition } from "react";
 import { useTheme } from "next-themes";
 import { logoutAction } from "@/app/actions/auth";
+import { AppIcon, type AppIconName } from "@/components/ui/app-icon";
 
 const COLOR_THEMES = [
   { id: "rosa", label: "Rosa", color: "#db2777" },
@@ -13,9 +14,9 @@ const COLOR_THEMES = [
 ];
 
 const LOCALES = [
-  { id: "pt-BR", label: "🇧🇷 Português" },
-  { id: "en", label: "🇺🇸 English" },
-  { id: "es", label: "🇪🇸 Español" },
+  { id: "pt-BR", label: "Português (BR)" },
+  { id: "en", label: "English" },
+  { id: "es", label: "Español" },
 ];
 
 interface SettingsClientProps {
@@ -45,12 +46,12 @@ export function SettingsClient({ user, couple }: SettingsClientProps) {
   const [saved, setSaved] = useState(false);
   const [activeSection, setActiveSection] = useState("profile");
 
-  const sections = [
-    { id: "profile", label: "👤 Perfil", icon: "👤" },
-    { id: "appearance", label: "🎨 Aparência", icon: "🎨" },
-    { id: "couple", label: "💑 Casal", icon: "💑" },
-    { id: "language", label: "🌐 Idioma", icon: "🌐" },
-    { id: "danger", label: "⚠️ Conta", icon: "⚠️" },
+  const sections: { id: string; label: string; icon: AppIconName }[] = [
+    { id: "profile", label: "Perfil", icon: "user" },
+    { id: "appearance", label: "Aparência", icon: "palette" },
+    { id: "couple", label: "Casal", icon: "users" },
+    { id: "language", label: "Idioma", icon: "globe" },
+    { id: "danger", label: "Conta", icon: "alert-triangle" },
   ];
 
   const applyTheme = (themeId: string) => {
@@ -79,8 +80,12 @@ export function SettingsClient({ user, couple }: SettingsClientProps) {
             key={s.id}
             className={`settings-nav-item ${activeSection === s.id ? "settings-nav-active" : ""}`}
             onClick={() => setActiveSection(s.id)}
+            type="button"
           >
-            {s.label}
+            <span style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
+              <AppIcon name={s.icon} size={16} />
+              {s.label}
+            </span>
           </button>
         ))}
       </nav>
@@ -106,8 +111,14 @@ export function SettingsClient({ user, couple }: SettingsClientProps) {
                 <input type="email" defaultValue={user?.email} className="settings-input" disabled />
                 <span className="settings-hint">O e-mail não pode ser alterado</span>
               </div>
-              <button className="btn-save-settings" onClick={showSaved}>
-                {saved ? "✅ Salvo!" : "Salvar alterações"}
+              <button type="button" className="btn-save-settings" onClick={showSaved}>
+                {saved ? (
+                  <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+                    <AppIcon name="check" size={16} /> Salvo
+                  </span>
+                ) : (
+                  "Salvar alterações"
+                )}
               </button>
             </div>
           </div>
@@ -123,16 +134,20 @@ export function SettingsClient({ user, couple }: SettingsClientProps) {
               <h3 className="settings-subtitle">Modo</h3>
               <div className="theme-mode-grid">
                 {[
-                  { id: "light", label: "☀️ Claro" },
-                  { id: "dark", label: "🌙 Escuro" },
-                  { id: "system", label: "💻 Sistema" },
+                  { id: "light", label: "Claro", icon: "sun" as AppIconName },
+                  { id: "dark", label: "Escuro", icon: "moon" as AppIconName },
+                  { id: "system", label: "Sistema", icon: "laptop" as AppIconName },
                 ].map((m) => (
                   <button
                     key={m.id}
+                    type="button"
                     className={`theme-mode-btn ${theme === m.id ? "theme-mode-active" : ""}`}
                     onClick={() => setTheme(m.id)}
                   >
-                    {m.label}
+                    <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+                      <AppIcon name={m.icon} size={16} />
+                      {m.label}
+                    </span>
                   </button>
                 ))}
               </div>
@@ -178,8 +193,14 @@ export function SettingsClient({ user, couple }: SettingsClientProps) {
                   <label className="settings-label">Nossa história</label>
                   <textarea defaultValue={couple.bio ?? ""} placeholder="Conte a história de vocês..." rows={4} className="settings-input" style={{ resize: "vertical" }} />
                 </div>
-                <button className="btn-save-settings" onClick={showSaved}>
-                  {saved ? "✅ Salvo!" : "Salvar"}
+                <button type="button" className="btn-save-settings" onClick={showSaved}>
+                  {saved ? (
+                    <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+                      <AppIcon name="check" size={16} /> Salvo
+                    </span>
+                  ) : (
+                    "Salvar"
+                  )}
                 </button>
               </div>
             ) : (

@@ -66,7 +66,7 @@
   "dashboard": {
     "daysTogether": "Dias juntos",
     "todayInHistory": "Hoje na história",
-    "noHistoryToday": "Nenhuma memória especial nesta data... ainda! 😊",
+    "noHistoryToday": "Nenhuma memória especial nesta data... ainda!",
     "favorites": "Favoritos",
     "noFavorites": "Marque eventos como favoritos para vê-los aqui.",
     "dailyMessage": "Recadinho do dia",
@@ -125,7 +125,7 @@
     "inviteCodeDesc": "Compartilhe este código com seu/sua parceiro(a):",
     "enterCode": "Inserir código",
     "enterCodeDesc": "Digite o código de convite do seu/sua parceiro(a):",
-    "linked": "Casal vinculado! 🎉",
+    "linked": "Casal vinculado!",
     "codeExpired": "Código expirado ou inválido.",
     "alreadyLinked": "Você já está vinculado a um casal."
   },

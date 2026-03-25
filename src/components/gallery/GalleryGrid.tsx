@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { AppIcon } from "@/components/ui/app-icon";
 
 type Photo = {
   id: string;
@@ -60,7 +61,11 @@ export function GalleryGrid({ photos }: { photos: Photo[] }) {
                 loading="lazy"
               />
               <div className="gallery-overlay">
-                {photo.isFavorite && <span className="gallery-fav">⭐</span>}
+                {photo.isFavorite && (
+                  <span className="gallery-fav">
+                    <AppIcon name="star" size={16} fill="currentColor" />
+                  </span>
+                )}
                 {photo.eventTitle && (
                   <span className="gallery-event-title">{photo.eventTitle}</span>
                 )}
@@ -79,12 +84,17 @@ export function GalleryGrid({ photos }: { photos: Photo[] }) {
           aria-modal="true"
           aria-label="Visualizar foto"
         >
-          <button className="lb-close" onClick={closeLightbox} aria-label="Fechar">✕</button>
+          <button type="button" className="lb-close" onClick={closeLightbox} aria-label="Fechar">
+            <AppIcon name="x" size={20} />
+          </button>
           <button
+            type="button"
             className="lb-nav lb-prev"
             onClick={(e) => { e.stopPropagation(); prev(); }}
             aria-label="Anterior"
-          >‹</button>
+          >
+            <AppIcon name="chevron-left" size={28} />
+          </button>
 
           <div className="lb-content" onClick={(e) => e.stopPropagation()}>
             <div className="lb-img-wrap">
@@ -106,7 +116,9 @@ export function GalleryGrid({ photos }: { photos: Photo[] }) {
                     className="lb-event-link"
                     onClick={closeLightbox}
                   >
-                    📅 {lightbox.eventTitle}
+                    <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+                      <AppIcon name="calendar" size={14} /> {lightbox.eventTitle}
+                    </span>
                   </Link>
                 )}
               </div>
@@ -117,10 +129,13 @@ export function GalleryGrid({ photos }: { photos: Photo[] }) {
           </div>
 
           <button
+            type="button"
             className="lb-nav lb-next"
             onClick={(e) => { e.stopPropagation(); next(); }}
             aria-label="Próxima"
-          >›</button>
+          >
+            <AppIcon name="chevron-right" size={28} />
+          </button>
         </div>
       )}
 
@@ -150,7 +165,7 @@ export function GalleryGrid({ photos }: { photos: Photo[] }) {
           padding: 10px; gap: 4px;
         }
         .gallery-item:hover .gallery-overlay { opacity: 1; }
-        .gallery-fav { font-size: 14px; align-self: flex-end; position: absolute; top: 8px; right: 8px; }
+        .gallery-fav { color: #fbbf24; align-self: flex-end; position: absolute; top: 8px; right: 8px; display: flex; }
         .gallery-event-title {
           font-size: 12px; font-weight: 600; color: white;
           white-space: nowrap; overflow: hidden; text-overflow: ellipsis;

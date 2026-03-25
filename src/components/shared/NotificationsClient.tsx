@@ -4,6 +4,7 @@ import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { formatRelativeDate } from "@/lib/utils";
+import { AppIcon, NOTIFICATION_TYPE_ICONS } from "@/components/ui/app-icon";
 
 type Notification = {
   id: string;
@@ -27,15 +28,6 @@ interface NotificationsClientProps {
   settings: NotifSettings;
   userId: string;
 }
-
-const TYPE_ICONS: Record<string, string> = {
-  evento_amanha: "📅",
-  evento_hoje: "🔔",
-  aniversario: "🎂",
-  conquista: "🏆",
-  capsula: "⏳",
-  mensagem: "💌",
-};
 
 export function NotificationsClient({ notifications, settings, userId }: NotificationsClientProps) {
   const router = useRouter();
@@ -94,7 +86,9 @@ export function NotificationsClient({ notifications, settings, userId }: Notific
           {/* List */}
           {displayed.length === 0 ? (
             <div className="notif-empty">
-              <div className="notif-empty-icon">🔔</div>
+              <div className="notif-empty-icon">
+                <AppIcon name="bell" size={40} strokeWidth={1.5} />
+              </div>
               <h3>{tab === "unread" ? "Nenhuma notificação não lida" : "Nenhuma notificação ainda"}</h3>
               <p>Você receberá lembretes de eventos e conquistas aqui.</p>
             </div>
@@ -109,14 +103,21 @@ export function NotificationsClient({ notifications, settings, userId }: Notific
                   tabIndex={0}
                 >
                   <div className="notif-item-icon">
-                    {TYPE_ICONS[notif.type] ?? "🔔"}
+                    <AppIcon
+                      name={NOTIFICATION_TYPE_ICONS[notif.type] ?? "bell"}
+                      size={22}
+                    />
                   </div>
                   <div className="notif-item-body">
                     <div className="notif-item-title">{notif.title}</div>
                     {notif.body && <div className="notif-item-desc">{notif.body}</div>}
                     <div className="notif-item-time">
                       {formatRelativeDate(notif.createdAt.toISOString())}
-                      {notif.emailSent && <span className="notif-sent-badge">📧 E-mail enviado</span>}
+                      {notif.emailSent && (
+                        <span className="notif-sent-badge" style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
+                          <AppIcon name="mail" size={12} /> E-mail enviado
+                        </span>
+                      )}
                     </div>
                   </div>
                   {!notif.read && <div className="notif-dot" />}
@@ -129,7 +130,9 @@ export function NotificationsClient({ notifications, settings, userId }: Notific
         {/* ── Settings sidebar ───────────────────────────────────────────── */}
         <aside className="notif-settings">
           <div className="notif-settings-card">
-            <h3 className="notif-settings-title">⚙️ Preferências</h3>
+            <h3 className="notif-settings-title" style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <AppIcon name="settings" size={18} /> Preferências
+            </h3>
 
             <div className="notif-setting-row">
               <div>

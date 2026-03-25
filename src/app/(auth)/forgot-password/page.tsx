@@ -3,6 +3,7 @@
 import { useState, useTransition } from "react";
 import Link from "next/link";
 import { forgotPasswordAction } from "@/app/actions/auth";
+import { AppIcon } from "@/components/ui/app-icon";
 
 export default function ForgotPasswordPage() {
   const [isPending, startTransition] = useTransition();
@@ -23,7 +24,9 @@ export default function ForgotPasswordPage() {
   if (sent) {
     return (
       <div style={{ textAlign: "center" }}>
-        <div style={{ fontSize: 52, marginBottom: 16 }}>📧</div>
+        <div style={{ display: "flex", justifyContent: "center", marginBottom: 16 }}>
+          <AppIcon name="mail" size={52} strokeWidth={1.5} style={{ color: "var(--primary)" }} />
+        </div>
         <h2 style={{ fontFamily: "var(--font-display)", fontSize: 24, fontWeight: 800, color: "var(--foreground)", marginBottom: 8 }}>
           E-mail enviado!
         </h2>

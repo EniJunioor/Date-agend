@@ -5,6 +5,7 @@ import {
   ResponsiveContainer, PieChart, Pie, Cell, Legend,
 } from "recharts";
 import { categoryLabels, categoryColors } from "@/lib/utils";
+import { AppIcon, type AppIconName } from "@/components/ui/app-icon";
 
 const DAY_LABELS = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"];
 const MONTH_LABELS = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"];
@@ -50,15 +51,17 @@ export function StatsClient({ stats }: StatsClientProps) {
     <div className="stats-page">
       {/* ── Summary cards ─────────────────────────────────────────────────── */}
       <div className="stats-summary">
-        <StatCard icon="📅" value={stats.totalEvents} label="Eventos registrados" color="var(--primary)" />
-        <StatCard icon="🖼️" value={stats.totalPhotos} label="Fotos na galeria" color="#2563eb" />
-        <StatCard icon="⭐" value={stats.totalFavorites} label="Momentos favoritos" color="#d97706" />
-        <StatCard icon="📊" value={stats.byCategory.length} label="Categorias usadas" color="#059669" />
+        <StatCard icon="calendar" value={stats.totalEvents} label="Eventos registrados" color="var(--primary)" />
+        <StatCard icon="images" value={stats.totalPhotos} label="Fotos na galeria" color="#2563eb" />
+        <StatCard icon="star" value={stats.totalFavorites} label="Momentos favoritos" color="#d97706" />
+        <StatCard icon="bar-chart-3" value={stats.byCategory.length} label="Categorias usadas" color="#059669" />
       </div>
 
       {/* ── Monthly chart ─────────────────────────────────────────────────── */}
       <div className="stats-card">
-        <h2 className="stats-chart-title">📈 Eventos por mês (últimos 12 meses)</h2>
+        <h2 className="stats-chart-title" style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          <AppIcon name="line-chart" size={18} /> Eventos por mês (últimos 12 meses)
+        </h2>
         <ResponsiveContainer width="100%" height={220}>
           <BarChart data={monthData} margin={{ top: 5, right: 16, left: -20, bottom: 0 }}>
             <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
@@ -79,7 +82,9 @@ export function StatsClient({ stats }: StatsClientProps) {
       <div className="stats-row-2">
         {/* ── Category pie ────────────────────────────────────────────────── */}
         <div className="stats-card">
-          <h2 className="stats-chart-title">🏷️ Por categoria</h2>
+          <h2 className="stats-chart-title" style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            <AppIcon name="tag" size={18} /> Por categoria
+          </h2>
           {pieData.length === 0 ? (
             <div className="stats-empty">Nenhum evento registrado ainda.</div>
           ) : (
@@ -114,7 +119,9 @@ export function StatsClient({ stats }: StatsClientProps) {
 
         {/* ── Day of week ──────────────────────────────────────────────────── */}
         <div className="stats-card">
-          <h2 className="stats-chart-title">📆 Dia da semana favorito</h2>
+          <h2 className="stats-chart-title" style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            <AppIcon name="calendar-days" size={18} /> Dia da semana favorito
+          </h2>
           <div className="day-bars">
             {dayData.map((d) => {
               const max = Math.max(...dayData.map((x) => x.count), 1);
@@ -138,7 +145,9 @@ export function StatsClient({ stats }: StatsClientProps) {
 
       {/* ── Heatmap calendar ──────────────────────────────────────────────── */}
       <div className="stats-card">
-        <h2 className="stats-chart-title">🗓️ Mapa de calor — atividade do ano</h2>
+        <h2 className="stats-chart-title" style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          <AppIcon name="calendar" size={18} /> Mapa de calor — atividade do ano
+        </h2>
         <HeatmapCalendar byMonth={stats.byMonth} />
       </div>
 
@@ -147,10 +156,12 @@ export function StatsClient({ stats }: StatsClientProps) {
   );
 }
 
-function StatCard({ icon, value, label, color }: { icon: string; value: number; label: string; color: string }) {
+function StatCard({ icon, value, label, color }: { icon: AppIconName; value: number; label: string; color: string }) {
   return (
     <div className="stat-card">
-      <div className="stat-card-icon" style={{ color }}>{icon}</div>
+      <div className="stat-card-icon" style={{ color, display: "flex", justifyContent: "center" }}>
+        <AppIcon name={icon} size={28} />
+      </div>
       <div className="stat-card-value" style={{ color }}>{value.toLocaleString("pt-BR")}</div>
       <div className="stat-card-label">{label}</div>
     </div>
@@ -199,7 +210,7 @@ const statsStyles = `
     background: var(--background); border: 1px solid var(--border);
     border-radius: var(--radius-lg); padding: 20px; text-align: center;
   }
-  .stat-card-icon { font-size: 28px; margin-bottom: 8px; }
+  .stat-card-icon { margin-bottom: 8px; }
   .stat-card-value {
     font-family: var(--font-display); font-size: 32px; font-weight: 900;
     line-height: 1; margin-bottom: 4px;

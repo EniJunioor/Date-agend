@@ -5,7 +5,7 @@ export const registerSchema = z.object({
     .string()
     .min(2, "Nome deve ter ao menos 2 caracteres")
     .max(100, "Nome muito longo"),
-  email: z.string().email("E-mail inválido").toLowerCase(),
+  email: z.string().trim().email("E-mail inválido").toLowerCase(),
   password: z
     .string()
     .min(8, "Senha deve ter ao menos 8 caracteres")
@@ -14,12 +14,16 @@ export const registerSchema = z.object({
 });
 
 export const loginSchema = z.object({
-  email: z.string().email("E-mail inválido").toLowerCase(),
+  email: z
+    .string()
+    .trim()
+    .email("E-mail inválido")
+    .toLowerCase(),
   password: z.string().min(1, "Senha é obrigatória"),
 });
 
 export const forgotPasswordSchema = z.object({
-  email: z.string().email("E-mail inválido").toLowerCase(),
+  email: z.string().trim().email("E-mail inválido").toLowerCase(),
 });
 
 export const resetPasswordSchema = z
