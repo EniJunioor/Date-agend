@@ -7,6 +7,61 @@ import {
 } from "@/app/actions/auth";
 import { signIn } from "next-auth/react";
 
+function UserIcon() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path
+        d="M12 12a4.1 4.1 0 1 0-4.1-4.1A4.1 4.1 0 0 0 12 12Z"
+        stroke="currentColor"
+        strokeWidth="1.8"
+      />
+      <path
+        d="M4.5 20c1.7-4 5.1-6 7.5-6s5.8 2 7.5 6"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+}
+
+function MailIcon() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path
+        d="M4 7.5A2.5 2.5 0 0 1 6.5 5h11A2.5 2.5 0 0 1 20 7.5v9A2.5 2.5 0 0 1 17.5 19h-11A2.5 2.5 0 0 1 4 16.5v-9Z"
+        stroke="currentColor"
+        strokeWidth="1.8"
+      />
+      <path
+        d="m6.5 8 5.1 4.1c.9.72 2.1.72 3 0L19.5 8"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+function LockIcon() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path
+        d="M7.5 11V8.8A4.5 4.5 0 0 1 12 4.3a4.5 4.5 0 0 1 4.5 4.5V11"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+      />
+      <path
+        d="M7 11h10a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2Z"
+        stroke="currentColor"
+        strokeWidth="1.8"
+      />
+    </svg>
+  );
+}
+
 function GoogleGlyph() {
   return (
     <svg width="18" height="18" viewBox="0 0 48 48" aria-hidden="true">
@@ -50,6 +105,8 @@ export function RegisterForm() {
   const [error, setError] = useState<string | null>(null);
   const [done, setDone] = useState<DoneState | null>(null);
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [resendPending, setResendPending] = useState(false);
   const [resendMsg, setResendMsg] = useState<string | null>(null);
 
@@ -63,17 +120,26 @@ export function RegisterForm() {
     e.preventDefault();
     setError(null);
     const form = e.currentTarget;
-    const firstName = (
-      form.elements.namedItem("firstName") as HTMLInputElement
-    ).value.trim();
-    const lastName = (
-      form.elements.namedItem("lastName") as HTMLInputElement
-    ).value.trim();
+    const name = (form.elements.namedItem("name") as HTMLInputElement).value.trim();
     const email = (form.elements.namedItem("email") as HTMLInputElement).value.trim();
     const pwd = (form.elements.namedItem("password") as HTMLInputElement).value;
+    const confirm = (form.elements.namedItem("confirmPassword") as HTMLInputElement).value;
+
+    if (!acceptedTerms) {
+      setError("Você precisa aceitar os termos para continuar.");
+      return;
+    }
+    if (pwd !== confirm) {
+      setError("As senhas não coincidem.");
+      return;
+    }
+    if (pwd.length < 8) {
+      setError("A senha deve ter ao menos 8 caracteres.");
+      return;
+    }
 
     const fd = new FormData();
-    fd.set("name", [firstName, lastName].filter(Boolean).join(" ") || firstName);
+    fd.set("name", name);
     fd.set("email", email);
     fd.set("password", pwd);
 
@@ -110,18 +176,18 @@ export function RegisterForm() {
 
   if (done) {
     return (
-      <div>
-        <h2 className="auth-split-page-title" style={{ marginBottom: "0.5rem" }}>
+      <div className="auth-modern-form">
+        <h2 className="auth-modern-title" style={{ fontSize: 28, marginBottom: 8 }}>
           Verifique seu e-mail
         </h2>
         {done.emailSent ? (
-          <p className="auth-split-page-sub" style={{ marginBottom: "1rem" }}>
+          <p className="auth-modern-subtitle" style={{ marginBottom: 14 }}>
             Enviamos um link de confirmação para <strong>{done.email}</strong>.
           </p>
         ) : (
           <>
             <div
-              className="auth-split-alert auth-split-alert--warn"
+              className="auth-modern-alert auth-modern-alert--warn"
               role="status"
               style={{ marginBottom: "1rem", textAlign: "left" }}
             >
@@ -138,7 +204,7 @@ export function RegisterForm() {
                 e-mail da conta Resend recebe).
               </span>
             </div>
-            <p className="auth-split-page-sub" style={{ marginBottom: "1rem" }}>
+            <p className="auth-modern-subtitle" style={{ marginBottom: 14 }}>
               Sua conta em <strong>{done.email}</strong> foi criada — assim que o envio
               funcionar, use o botão abaixo para receber o link.
             </p>
@@ -146,8 +212,8 @@ export function RegisterForm() {
         )}
         {resendMsg ? (
           <div
-            className={`auth-split-alert${
-              resendMsg.startsWith("Se existir") ? " auth-split-alert--warn" : " auth-split-alert--err"
+            className={`auth-modern-alert${
+              resendMsg.startsWith("Se existir") ? " auth-modern-alert--warn" : " auth-modern-alert--err"
             }`}
             role="status"
             style={{ marginBottom: "1rem" }}
@@ -157,7 +223,7 @@ export function RegisterForm() {
         ) : null}
         <button
           type="button"
-          className="auth-split-btn-primary"
+          className="auth-modern-primary"
           style={{ marginTop: 0 }}
           disabled={resendPending}
           onClick={handleResendVerification}
@@ -169,101 +235,144 @@ export function RegisterForm() {
   }
 
   return (
-    <div>
+    <div className="auth-modern-form">
       <form onSubmit={handleSubmit}>
         {error ? (
-          <div className="auth-split-alert auth-split-alert--err" role="alert">
+          <div className="auth-modern-alert auth-modern-alert--err" role="alert">
             {error}
           </div>
         ) : null}
 
-        <div className="auth-split-row2">
-          <div className="auth-split-field" style={{ marginBottom: "0.85rem" }}>
-            <label htmlFor="firstName" className="auth-split-label">
-              Nome
+        <div className="auth-modern-field">
+          <div className="auth-modern-label-row">
+            <label htmlFor="name" className="auth-modern-label">
+              Full Name
             </label>
+          </div>
+          <div className="auth-modern-input-wrap">
+            <span className="auth-modern-input-ic" aria-hidden="true">
+              <UserIcon />
+            </span>
             <input
-              id="firstName"
-              name="firstName"
+              id="name"
+              name="name"
               type="text"
-              autoComplete="given-name"
+              autoComplete="name"
               required
-              placeholder="Ana"
-              className="auth-split-input"
+              placeholder="Enter your full name"
+              className="auth-modern-input"
               disabled={isPending}
             />
           </div>
-          <div className="auth-split-field" style={{ marginBottom: "0.85rem" }}>
-            <label htmlFor="lastName" className="auth-split-label">
-              Sobrenome
+        </div>
+
+        <div className="auth-modern-field">
+          <div className="auth-modern-label-row">
+            <label htmlFor="email" className="auth-modern-label">
+              Email Address
             </label>
+          </div>
+          <div className="auth-modern-input-wrap">
+            <span className="auth-modern-input-ic" aria-hidden="true">
+              <MailIcon />
+            </span>
             <input
-              id="lastName"
-              name="lastName"
-              type="text"
-              autoComplete="family-name"
-              placeholder="Silva"
-              className="auth-split-input"
+              id="email"
+              name="email"
+              type="email"
+              autoComplete="email"
+              required
+              placeholder="you@example.com"
+              className="auth-modern-input"
               disabled={isPending}
             />
           </div>
         </div>
 
-        <div className="auth-split-field">
-          <label htmlFor="email" className="auth-split-label">
-            E-mail
-          </label>
-          <input
-            id="email"
-            name="email"
-            type="email"
-            autoComplete="email"
-            required
-            placeholder="voce@email.com"
-            className="auth-split-input"
-            disabled={isPending}
-          />
-        </div>
-
-        <div className="auth-split-field">
-          <label htmlFor="password" className="auth-split-label">
-            Senha
-          </label>
-          <input
-            id="password"
-            name="password"
-            type="password"
-            autoComplete="new-password"
-            required
-            placeholder="Mínimo 8 caracteres"
-            className="auth-split-input"
-            disabled={isPending}
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-          <div className="auth-split-strength" aria-hidden="true">
-            {[0, 1, 2, 3].map((i) => (
-              <div
-                key={i}
-                className={`auth-split-strength-bar${i < strength ? " is-on" : ""}`}
+        <div className="auth-modern-row2">
+          <div className="auth-modern-field" style={{ marginBottom: 0 }}>
+            <div className="auth-modern-label-row">
+              <label htmlFor="password" className="auth-modern-label">
+                Password
+              </label>
+            </div>
+            <div className="auth-modern-input-wrap">
+              <span className="auth-modern-input-ic" aria-hidden="true">
+                <LockIcon />
+              </span>
+              <input
+                id="password"
+                name="password"
+                type="password"
+                autoComplete="new-password"
+                required
+                placeholder="••••••••"
+                className="auth-modern-input"
+                disabled={isPending}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
               />
-            ))}
+            </div>
+            <div className="auth-modern-strength" aria-hidden="true">
+              {[0, 1, 2, 3].map((i) => (
+                <span
+                  key={i}
+                  className={`auth-modern-strength-bar${i < strength ? " is-on" : ""}`}
+                />
+              ))}
+            </div>
+          </div>
+
+          <div className="auth-modern-field" style={{ marginBottom: 0 }}>
+            <div className="auth-modern-label-row">
+              <label htmlFor="confirmPassword" className="auth-modern-label">
+                Confirm Password
+              </label>
+            </div>
+            <div className="auth-modern-input-wrap">
+              <span className="auth-modern-input-ic" aria-hidden="true">
+                <LockIcon />
+              </span>
+              <input
+                id="confirmPassword"
+                name="confirmPassword"
+                type="password"
+                autoComplete="new-password"
+                required
+                placeholder="••••••••"
+                className="auth-modern-input"
+                disabled={isPending}
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+              />
+            </div>
           </div>
         </div>
 
-        <button type="submit" className="auth-split-btn-primary" disabled={isPending}>
-          {isPending ? "Criando conta..." : "Criar minha conta"}
+        <label className="auth-modern-terms">
+          <input
+            type="checkbox"
+            checked={acceptedTerms}
+            onChange={(e) => setAcceptedTerms(e.target.checked)}
+            disabled={isPending}
+          />
+          <span>
+            I agree to the <a href="#" onClick={(e) => e.preventDefault()}>Terms of Service</a> and{" "}
+            <a href="#" onClick={(e) => e.preventDefault()}>Privacy Policy</a>
+          </span>
+        </label>
+
+        <button type="submit" className="auth-modern-primary" disabled={isPending}>
+          {isPending ? "Criando..." : "Create My Account"}
         </button>
       </form>
 
-      <div className="auth-split-divider">
-        <span>Ou continue com</span>
-      </div>
+      <div className="auth-modern-divider">OR CONTINUE WITH</div>
 
-      <div className="auth-split-social-row">
+      <div className="auth-modern-social-row">
         <button
           type="button"
-          className="auth-split-btn-social"
+          className="auth-modern-social-btn"
           onClick={handleGoogle}
           disabled={isPending}
         >

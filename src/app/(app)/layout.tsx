@@ -1,7 +1,8 @@
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
-import { AppSidebar } from "@/components/shared/AppSidebar";
-import { AppHeader } from "@/components/shared/AppHeader";
+import "@/styles/amore-app.css";
+import { AmoreSidebar } from "@/components/amore/AmoreSidebar";
+import { AmoreHeader } from "@/components/amore/AmoreHeader";
 import { db } from "@/lib/db";
 import { users, couples, photos } from "@/lib/db/schema";
 import { and, count, eq, gte } from "drizzle-orm";
@@ -67,43 +68,14 @@ export default async function AppLayout({
   }
 
   return (
-    <div className="app-shell">
-      <AppSidebar
-        user={user}
-        couple={couple}
-        partner={partner}
-        galleryRecentPhotoCount={galleryRecentPhotoCount}
-      />
-      <div className="app-main">
-        <AppHeader user={user} />
-        <main className="app-content">{children}</main>
+    <div className="amore-app">
+      <div className="amore-shell">
+        <AmoreSidebar user={user} />
+        <div className="amore-main">
+          <AmoreHeader />
+          <main className="amore-content">{children}</main>
+        </div>
       </div>
-
-      <style>{`
-        .app-shell {
-          display: flex;
-          min-height: 100vh;
-          background: var(--background-subtle);
-        }
-        .app-main {
-          flex: 1;
-          display: flex;
-          flex-direction: column;
-          min-width: 0;
-          overflow: hidden;
-        }
-        .app-content {
-          flex: 1;
-          padding: 28px;
-          overflow-y: auto;
-          max-width: 1200px;
-          width: 100%;
-          margin: 0 auto;
-        }
-        @media (max-width: 768px) {
-          .app-content { padding: 16px; }
-        }
-      `}</style>
     </div>
   );
 }

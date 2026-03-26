@@ -1,0 +1,234 @@
+/* Amore Moderno — App Shell (sidebar + header + content) */
+
+.amore-app {
+  min-height: 100vh;
+  background: #f4f7ff;
+}
+
+.amore-shell {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  min-height: 100vh;
+}
+
+.amore-sidebar {
+  background: rgba(255, 255, 255, 0.78);
+  border-right: 1px solid rgba(148, 163, 184, 0.28);
+  backdrop-filter: blur(12px);
+  padding: 18px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.amore-brand {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 8px 10px;
+}
+.amore-brand-title {
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  color: #111827;
+}
+.amore-brand-sub {
+  font-size: 12px;
+  color: rgba(107, 114, 128, 0.75);
+}
+
+.amore-search {
+  position: relative;
+  padding: 0 10px;
+}
+.amore-search input {
+  width: 100%;
+  height: 38px;
+  border-radius: 999px;
+  border: 1px solid rgba(148, 163, 184, 0.30);
+  background: rgba(241, 245, 255, 0.7);
+  padding: 0 14px 0 38px;
+  font-size: 13px;
+  outline: none;
+}
+.amore-search-ic {
+  position: absolute;
+  left: 22px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 16px;
+  height: 16px;
+  color: rgba(100, 116, 139, 0.7);
+}
+
+.amore-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 0 10px;
+}
+.amore-nav a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  text-decoration: none;
+  color: rgba(51, 65, 85, 0.9);
+  font-weight: 600;
+  font-size: 13px;
+}
+.amore-nav a:hover {
+  background: rgba(219, 39, 119, 0.06);
+}
+.amore-nav a.is-active {
+  background: rgba(219, 39, 119, 0.10);
+  color: #b0005f;
+}
+.amore-nav-ic {
+  width: 18px;
+  height: 18px;
+  color: rgba(100, 116, 139, 0.75);
+}
+.amore-nav a.is-active .amore-nav-ic {
+  color: #b0005f;
+}
+
+.amore-add {
+  margin-top: auto;
+  padding: 0 10px;
+}
+.amore-add button {
+  width: 100%;
+  height: 44px;
+  border: none;
+  border-radius: 999px;
+  cursor: pointer;
+  font-weight: 800;
+  font-size: 13px;
+  color: #fff;
+  background: linear-gradient(90deg, #b0005f 0%, #db2777 55%, #ef5da8 100%);
+  box-shadow: 0 12px 34px rgba(219, 39, 119, 0.22);
+}
+
+.amore-profile {
+  padding: 12px 10px 6px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  border-top: 1px solid rgba(148, 163, 184, 0.22);
+}
+.amore-profile-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+.amore-avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  background: rgba(219, 39, 119, 0.12);
+  color: #b0005f;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 900;
+  overflow: hidden;
+  flex: none;
+}
+.amore-profile-meta {
+  min-width: 0;
+}
+.amore-profile-name {
+  font-size: 12px;
+  font-weight: 800;
+  color: #111827;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.amore-profile-sub {
+  font-size: 11px;
+  color: rgba(107, 114, 128, 0.72);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.amore-profile-actions {
+  display: inline-flex;
+  gap: 8px;
+}
+.amore-icon-btn {
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  border: 1px solid rgba(148, 163, 184, 0.28);
+  background: rgba(255, 255, 255, 0.7);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.amore-main {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.amore-header {
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 28px;
+  background: rgba(255, 255, 255, 0.72);
+  border-bottom: 1px solid rgba(148, 163, 184, 0.24);
+  backdrop-filter: blur(12px);
+  position: sticky;
+  top: 0;
+  z-index: 20;
+}
+.amore-header-left {
+  min-width: 0;
+}
+.amore-header-kicker {
+  font-size: 11px;
+  color: rgba(107, 114, 128, 0.7);
+}
+.amore-header-title {
+  font-size: 18px;
+  font-weight: 900;
+  color: #111827;
+  letter-spacing: -0.02em;
+}
+.amore-header-right {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.amore-content {
+  padding: 28px;
+  max-width: 1120px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+@media (max-width: 1024px) {
+  .amore-shell {
+    grid-template-columns: 1fr;
+  }
+  .amore-sidebar {
+    display: none;
+  }
+  .amore-content {
+    padding: 18px;
+  }
+  .amore-header {
+    padding: 0 18px;
+  }
+}
+

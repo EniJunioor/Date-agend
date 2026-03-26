@@ -5,6 +5,69 @@ import Link from "next/link";
 import { loginAction } from "@/app/actions/auth";
 import { signIn } from "next-auth/react";
 
+function MailIcon() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path
+        d="M4 7.5A2.5 2.5 0 0 1 6.5 5h11A2.5 2.5 0 0 1 20 7.5v9A2.5 2.5 0 0 1 17.5 19h-11A2.5 2.5 0 0 1 4 16.5v-9Z"
+        stroke="currentColor"
+        strokeWidth="1.8"
+      />
+      <path
+        d="m6.5 8 5.1 4.1c.9.72 2.1.72 3 0L19.5 8"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+function LockIcon() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path
+        d="M7.5 11V8.8A4.5 4.5 0 0 1 12 4.3a4.5 4.5 0 0 1 4.5 4.5V11"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+      />
+      <path
+        d="M7 11h10a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2Z"
+        stroke="currentColor"
+        strokeWidth="1.8"
+      />
+    </svg>
+  );
+}
+
+function EyeIcon({ off }: { off?: boolean }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path
+        d="M2.8 12s3.4-6.5 9.2-6.5S21.2 12 21.2 12s-3.4 6.5-9.2 6.5S2.8 12 2.8 12Z"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M12 15.2a3.2 3.2 0 1 0 0-6.4 3.2 3.2 0 0 0 0 6.4Z"
+        stroke="currentColor"
+        strokeWidth="1.8"
+      />
+      {off ? (
+        <path
+          d="M4 4l16 16"
+          stroke="currentColor"
+          strokeWidth="1.8"
+          strokeLinecap="round"
+        />
+      ) : null}
+    </svg>
+  );
+}
+
 function GoogleGlyph() {
   return (
     <svg width="18" height="18" viewBox="0 0 48 48" aria-hidden="true">
@@ -35,6 +98,7 @@ interface LoginFormProps {
 export function LoginForm({ callbackUrl = "/dashboard" }: LoginFormProps) {
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
+  const [showPassword, setShowPassword] = useState(false);
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -51,64 +115,83 @@ export function LoginForm({ callbackUrl = "/dashboard" }: LoginFormProps) {
   }
 
   return (
-    <div>
+    <div className="auth-modern-form">
       <form onSubmit={handleSubmit} method="post">
         {error ? (
-          <div className="auth-split-alert auth-split-alert--err" role="alert">
+          <div className="auth-modern-alert auth-modern-alert--err" role="alert">
             {error}
           </div>
         ) : null}
 
-        <div className="auth-split-field">
-          <label htmlFor="email" className="auth-split-label">
-            E-mail
-          </label>
-          <input
-            id="email"
-            name="email"
-            type="email"
-            autoComplete="email"
-            required
-            placeholder="voce@email.com"
-            className="auth-split-input"
-            disabled={isPending}
-          />
+        <div className="auth-modern-field">
+          <div className="auth-modern-label-row">
+            <label htmlFor="email" className="auth-modern-label">
+              Email Address
+            </label>
+          </div>
+          <div className="auth-modern-input-wrap">
+            <span className="auth-modern-input-ic" aria-hidden="true">
+              <MailIcon />
+            </span>
+            <input
+              id="email"
+              name="email"
+              type="email"
+              autoComplete="email"
+              required
+              placeholder="name@yourstory.com"
+              className="auth-modern-input"
+              disabled={isPending}
+            />
+          </div>
         </div>
 
-        <div className="auth-split-field">
-          <div className="auth-split-field-header">
-            <label htmlFor="password" className="auth-split-label">
-              Senha
+        <div className="auth-modern-field">
+          <div className="auth-modern-label-row">
+            <label htmlFor="password" className="auth-modern-label">
+              Password
             </label>
-            <Link href="/forgot-password" className="auth-split-link-sm">
-              Esqueci minha senha
+            <Link href="/forgot-password" className="auth-modern-link">
+              Forgot password?
             </Link>
           </div>
-          <input
-            id="password"
-            name="password"
-            type="password"
-            autoComplete="current-password"
-            required
-            placeholder="Mínimo 8 caracteres"
-            className="auth-split-input"
-            disabled={isPending}
-          />
+          <div className="auth-modern-input-wrap">
+            <span className="auth-modern-input-ic" aria-hidden="true">
+              <LockIcon />
+            </span>
+            <input
+              id="password"
+              name="password"
+              type={showPassword ? "text" : "password"}
+              autoComplete="current-password"
+              required
+              placeholder="••••••••"
+              className="auth-modern-input"
+              disabled={isPending}
+            />
+            <button
+              type="button"
+              className="auth-modern-eye"
+              onClick={() => setShowPassword((v) => !v)}
+              aria-label={showPassword ? "Ocultar senha" : "Mostrar senha"}
+              disabled={isPending}
+            >
+              <EyeIcon off={showPassword} />
+            </button>
+          </div>
         </div>
 
-        <button type="submit" className="auth-split-btn-primary" disabled={isPending}>
-          {isPending ? "Entrando..." : "Entrar"}
+        <button type="submit" className="auth-modern-primary" disabled={isPending}>
+          {isPending ? "Entrando..." : "Login"}
         </button>
       </form>
 
-      <div className="auth-split-divider">
-        <span>Ou continue com</span>
-      </div>
+      <div className="auth-modern-divider">OR CONTINUE WITH</div>
 
-      <div className="auth-split-social-row">
+      <div className="auth-modern-social-row">
         <button
           type="button"
-          className="auth-split-btn-social"
+          className="auth-modern-social-btn"
           onClick={handleGoogle}
           disabled={isPending}
         >
