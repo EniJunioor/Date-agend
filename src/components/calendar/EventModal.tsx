@@ -18,7 +18,7 @@ type Event = {
   eventTime?: string | null;
   category?: string;
   moodEmoji?: string | null;
-  isFavorite?: boolean;
+  isFavorite?: boolean | null;
   tags?: string[] | null;
   location?: string | null;
   color?: string | null;
@@ -255,7 +255,7 @@ export function EventModal({ defaultDate, event, onClose, onSuccess }: EventModa
           {/* Favorite + Recurring */}
           <div className="form-grid-2">
             <label className="form-toggle">
-              <input type="checkbox" name="isFavorite" value="true" defaultChecked={event?.isFavorite} />
+              <input type="checkbox" name="isFavorite" value="true" defaultChecked={event?.isFavorite ?? false} />
               <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
                 <AppIcon name="star" size={16} /> Favorito
               </span>

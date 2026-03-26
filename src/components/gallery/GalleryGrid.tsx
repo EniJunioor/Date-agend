@@ -9,7 +9,7 @@ type Photo = {
   id: string;
   url: string;
   caption: string | null;
-  isFavorite: boolean;
+  isFavorite: boolean | null;
   createdAt: Date;
   eventId: string;
   eventTitle: string | null;

@@ -13,7 +13,7 @@ type Photo = {
   id: string;
   url: string;
   caption: string | null;
-  isFavorite: boolean;
+  isFavorite: boolean | null;
   createdAt: Date;
 };
 
@@ -25,7 +25,7 @@ type Event = {
   eventTime: string | null;
   category: string;
   moodEmoji: string | null;
-  isFavorite: boolean;
+  isFavorite: boolean | null;
   tags: string[] | null;
   location: string | null;
   color: string | null;

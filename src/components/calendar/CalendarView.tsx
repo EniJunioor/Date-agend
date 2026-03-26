@@ -28,7 +28,7 @@ type CalendarEvent = {
   category: string;
   color: string | null;
   moodEmoji: string | null;
-  isFavorite: boolean;
+  isFavorite: boolean | null;
 };
 
 interface CalendarViewProps {

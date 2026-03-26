@@ -85,7 +85,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           .limit(1);
         if (dbUser) {
           token.coupleId = dbUser.coupleId;
-          token.locale = dbUser.locale;
+          token.locale = dbUser.locale ?? undefined;
         }
       }
       return token;

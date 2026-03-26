@@ -11,16 +11,16 @@ type Notification = {
   type: string;
   title: string;
   body: string | null;
-  read: boolean;
-  emailSent: boolean;
+  read: boolean | null;
+  emailSent: boolean | null;
   createdAt: Date;
   eventId: string | null;
 };
 
 type NotifSettings = {
-  emailEnabled: boolean;
-  pushEnabled: boolean;
-  remindDaysBefore: number;
+  emailEnabled: boolean | null;
+  pushEnabled: boolean | null;
+  remindDaysBefore: number | null;
 } | null;
 
 interface NotificationsClientProps {

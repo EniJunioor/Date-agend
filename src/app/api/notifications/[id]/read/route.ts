@@ -7,8 +7,9 @@ import { eq, and } from "drizzle-orm";
 // PATCH /api/notifications/[id]/read
 export async function PATCH(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params;
   const session = await auth();
   if (!session?.user?.id) {
     return NextResponse.json({ error: "Não autenticado" }, { status: 401 });
@@ -19,7 +20,7 @@ export async function PATCH(
     .set({ read: true })
     .where(
       and(
-        eq(notifications.id, params.id),
+        eq(notifications.id, id),
         eq(notifications.userId, session.user.id)
       )
     );
