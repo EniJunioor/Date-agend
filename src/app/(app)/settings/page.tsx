@@ -27,6 +27,7 @@ export default async function SettingsPage() {
     .limit(1);
 
   let couple = null;
+  let partner: { name: string; image: string | null } | null = null;
   if (user?.coupleId) {
     const [c] = await db
       .select({ id: couples.id, theme: couples.theme, bio: couples.bio, phrase: couples.phrase, startDate: couples.startDate })
@@ -34,7 +35,14 @@ export default async function SettingsPage() {
       .where(eq(couples.id, user.coupleId))
       .limit(1);
     couple = c;
+
+    const members = await db
+      .select({ id: users.id, name: users.name, image: users.image })
+      .from(users)
+      .where(eq(users.coupleId, user.coupleId));
+    const other = members.find((m) => m.id !== user.id);
+    if (other) partner = { name: other.name ?? "", image: other.image };
   }
 
-  return <SettingsClient user={user} couple={couple} />;
+  return <SettingsClient user={user} partner={partner} couple={couple} />;
 }
