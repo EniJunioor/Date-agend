@@ -43,19 +43,21 @@ export default async function TimelinePage() {
 
   return (
     <div className="timeline-page">
-      {/* ── Counter hero ────────────────────────────────────────────────── */}
-      <div className="timeline-hero">
-        <div className="tl-hero-bg" />
-        <div className="tl-hero-content">
-          <p className="tl-hero-label">Nossa história</p>
-          <div className="tl-hero-counter">
-            <span className="tl-counter-num">{daysTogether.toLocaleString("pt-BR")}</span>
-            <span className="tl-counter-unit">dias</span>
-          </div>
-          <p className="tl-hero-sub">
-            Desde {formatEventDate(couple.startDate as string)} ·{" "}
-            {events.length} {events.length === 1 ? "memória" : "memórias"} registradas
-          </p>
+      {/* ── Header "The Chapters of Us" ─────────────────────────────────── */}
+      <div className="tl-chap-header">
+        <h1 className="tl-chap-title">The Chapters of Us</h1>
+        <p className="tl-chap-sub">
+          Every moment is a thread in the beautiful tapestry we're weaving together.
+        </p>
+        <div className="tl-chap-meta">
+          <span className="tl-chap-pill">
+            <AppIcon name="history" size={13} />
+            {daysTogether.toLocaleString("pt-BR")} dias juntos
+          </span>
+          <span className="tl-chap-pill">
+            <AppIcon name="book-open" size={13} />
+            {events.length} {events.length === 1 ? "memória" : "memórias"}
+          </span>
         </div>
       </div>
 
@@ -165,6 +167,15 @@ export default async function TimelinePage() {
         </div>
       )}
 
+      {/* ── To be continued ─────────────────────────────────────────────── */}
+      <div className="tl-continue-card">
+        <div className="tl-continue-dots">· · ·</div>
+        <p className="tl-continue-label">To be continued...</p>
+        <Link href="/calendar" className="tl-continue-cta">
+          Create new memory →
+        </Link>
+      </div>
+
       <style>{timelineStyles}</style>
     </div>
   );
@@ -173,27 +184,39 @@ export default async function TimelinePage() {
 const timelineStyles = `
   .timeline-page { display: flex; flex-direction: column; gap: 28px; }
 
-  /* Hero */
-  .timeline-hero {
-    position: relative; overflow: hidden;
-    background: linear-gradient(135deg, #1a0533, var(--primary-dark), var(--primary));
-    border-radius: var(--radius-xl); padding: 48px 36px;
-    color: white; text-align: center;
+  /* Chapters header */
+  .tl-chap-header { padding-bottom: 8px; }
+  .tl-chap-title {
+    font-size: clamp(32px, 4vw, 48px);
+    font-weight: 900; color: #111827;
+    letter-spacing: -0.03em; margin: 0 0 8px;
   }
-  .tl-hero-bg {
-    position: absolute; inset: 0;
-    background: radial-gradient(circle at 50% 0%, rgba(244,114,182,0.2) 0%, transparent 70%);
+  .tl-chap-sub { font-size: 15px; color: #6b7280; margin: 0 0 16px; max-width: 500px; line-height: 1.6; }
+  .tl-chap-meta { display: flex; gap: 10px; flex-wrap: wrap; }
+  .tl-chap-pill {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 5px 12px; border-radius: 999px;
+    background: rgba(176,0,95,0.08);
+    font-size: 12px; font-weight: 700; color: #b0005f;
   }
-  .tl-hero-content { position: relative; z-index: 1; }
-  .tl-hero-label { font-size: 14px; font-weight: 600; opacity: 0.7; margin-bottom: 8px; letter-spacing: 1px; text-transform: uppercase; }
-  .tl-hero-counter { display: flex; align-items: baseline; gap: 12px; justify-content: center; margin-bottom: 10px; }
-  .tl-counter-num {
-    font-family: var(--font-display);
-    font-size: clamp(60px, 10vw, 100px);
-    font-weight: 900; line-height: 1;
+
+  /* To be continued */
+  .tl-continue-card {
+    background: #f8faff;
+    border: 1px dashed #e9edf5;
+    border-radius: 20px;
+    padding: 36px;
+    text-align: center;
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
   }
-  .tl-counter-unit { font-size: 28px; font-weight: 600; opacity: 0.7; }
-  .tl-hero-sub { font-size: 14px; opacity: 0.65; }
+  .tl-continue-dots { font-size: 20px; color: #d1d5db; letter-spacing: 6px; }
+  .tl-continue-label { font-size: 14px; color: #9ca3af; margin: 0; }
+  .tl-continue-cta {
+    display: inline-flex; align-items: center; gap: 4px;
+    font-size: 14px; font-weight: 800; color: #b0005f;
+    text-decoration: none; margin-top: 4px;
+  }
+  .tl-continue-cta:hover { text-decoration: underline; }
 
   /* Empty */
   .tl-empty {

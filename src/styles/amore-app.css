@@ -98,7 +98,8 @@
   margin-top: auto;
   padding: 0 10px;
 }
-.amore-add button {
+.amore-add button,
+.amore-add-link {
   width: 100%;
   height: 44px;
   border: none;
@@ -109,6 +110,15 @@
   color: #fff;
   background: linear-gradient(90deg, #b0005f 0%, #db2777 55%, #ef5da8 100%);
   box-shadow: 0 12px 34px rgba(219, 39, 119, 0.22);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  transition: filter 0.15s, transform 0.15s;
+}
+.amore-add-link:hover {
+  filter: brightness(1.06);
+  transform: translateY(-1px);
 }
 
 .amore-profile {

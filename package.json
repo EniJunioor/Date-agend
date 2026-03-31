@@ -11,7 +11,8 @@
     "db:migrate": "drizzle-kit migrate",
     "db:studio": "drizzle-kit studio",
     "db:push": "drizzle-kit push",
-    "db:seed": "tsx scripts/seed.ts"
+    "db:seed": "tsx scripts/seed.ts",
+    "db:fix-migrations": "tsx scripts/fix-migrations.ts"
   },
   "dependencies": {
     "@auth/drizzle-adapter": "^1.11.1",

@@ -1,6 +1,6 @@
 import "@/styles/auth-modern.css";
 import { AuthPageTransition } from "@/components/auth/AuthPageTransition";
-import { AuthShowcasePanel } from "@/components/auth/AuthShowcasePanel";
+import { AuthPanelRouter } from "@/components/auth/AuthPanelRouter";
 
 export default function AuthLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -10,7 +10,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
           <AuthPageTransition>{children}</AuthPageTransition>
         </main>
         <aside className="auth-modern-right" aria-label="Painel de apresentação">
-          <AuthShowcasePanel />
+          <AuthPanelRouter />
         </aside>
       </div>
     </div>

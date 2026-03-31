@@ -62,7 +62,7 @@ export function AmoreSidebar({
       </nav>
 
       <div className="amore-add">
-        <button type="button">+ Add Memory</button>
+        <a href="/calendar" className="amore-add-link">+ Add Memory</a>
       </div>
 
       <div className="amore-profile">

@@ -20,8 +20,8 @@
   --border: oklch(0.922 0 0);
   --border-strong: #cbd5e1;
 
-  /* Primary — Rosa (padrão) */
-  --primary: oklch(0.205 0 0);
+  /* Primary — Rosa (padrão Amore Moderno) */
+  --primary: #db2777;
   --primary-light: #f472b6;
   --primary-dark: #9d174d;
   --primary-surface: #fce7f3;
